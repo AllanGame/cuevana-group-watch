@@ -1,0 +1,21 @@
+.primaryButtonContainer, .secondaryButtonContainer {
+    display:inline-block;
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 4px;
+}
+
+.primaryButtonContainer {
+    background: #007AFF;
+}
+
+.primary, .secondary {
+    margin: 0px;
+    font-family: Pulp Display;
+    font-size: 18px;
+    line-height: 22px; 
+}
+
+.secondary {
+    color: #007aff;
+}
