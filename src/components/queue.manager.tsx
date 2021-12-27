@@ -4,9 +4,47 @@ import styles from '../styles/components/QueueManager.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Group from "../groups/group";
 import User from "../users/user";
+import QueueItem from "./queue.item";
 
-const URL_REGEX = new RegExp(/(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
-);
+const URL_REGEX = new RegExp(
+        /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
+    );
+
+interface Props {
+    group: Group;
+    viewer: User;
+}
+
+export default class QueueManager extends Component<Props> {
+    constructor(props: Props | Readonly<Props>) {
+        super(props);
+        this.state = {
+            group: props.group
+        }
+    }
+
+    render(): ReactNode {
+        const {group} = this.state as any;
+        return (
+            <div className={styles.queueManagerContainer}>
+                <div className={styles.searchContainer}>
+                    <input className={styles.searchInput} type="text" name="searchInput" id="searchInput" placeholder="Search or paste video" onChange={handleTyping} onKeyPress={handleEnterKey}/>
+                    <FontAwesomeIcon className={styles.searchBtn} icon="arrow-right" color="#AB9393" onClick={handleSearch}/>
+                </div>
+                <div className={styles.queueContainer}>
+                    <QueueItem 
+                        posterSrc="https://image.tmdb.org/t/p/w185_and_h278_bestv2/iKVHZGyq9rhCaI7nX1Nk89PMHG4.jpg" 
+                        title="Hawkeye 1x1" 
+                        duration="47m 21s" 
+                        addedBy={this.props.viewer} 
+                    />
+                </div>
+            </div>
+        )
+    }
+}
+
+// FUNCTIONS
 
 function handleEnterKey(e: any) {
     if(e.charCode == 13 && e.target.value.length > 0) {
@@ -47,33 +85,4 @@ function handleSearch() {
         console.log(error);
     }
 
-}
-
-interface Props {
-    group: Group;
-    viewer: User;
-}
-
-export default class QueueManager extends Component<Props> {
-    constructor(props: Props | Readonly<Props>) {
-        super(props);
-        this.state = {
-            group: props.group
-        }
-    }
-
-    render(): ReactNode {
-        const {group} = this.state as any;
-        return (
-            <div className={styles.queueManagerContainer}>
-                <div className={styles.searchContainer}>
-                    <input className={styles.searchInput} type="text" name="searchInput" id="searchInput" placeholder="Search or paste video" onChange={handleTyping} onKeyPress={handleEnterKey}/>
-                    <FontAwesomeIcon className={styles.searchBtn} icon="arrow-right" color="#AB9393" onClick={handleSearch}/>
-                </div>
-                <div className={styles.queueContainer}>
-                    {group.queue.map((item: Video) => <p>{item.origin}</p>)}
-                </div>
-            </div>
-        )
-    }
 }

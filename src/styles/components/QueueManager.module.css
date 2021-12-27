@@ -1,7 +1,7 @@
 .queueManagerContainer {
     width: 380px;
     height: 100%;
-    overflow-y: scroll;
+    /* overflow-y: scroll; */
     background: #16181F;
     overflow: hidden;   
 }
@@ -30,4 +30,26 @@
     cursor: pointer;
     display: none;
     float: right;
+}
+
+.queueContainer {
+    overflow-y: scroll;
+    height: 100%;
+}
+
+.queueContainer::-webkit-scrollbar {
+  width: 8px;  
+}
+
+.queueContainer::-webkit-scrollbar-track {
+  background: none;
+}
+ 
+.queueContainer::-webkit-scrollbar-thumb {
+  background: #725d5d; 
+  border-radius: 16px;
+}
+
+.queueContainer::-webkit-scrollbar-thumb:hover {
+  background: #5a4848; 
 }

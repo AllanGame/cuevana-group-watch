@@ -1,13 +1,16 @@
 import { NextPage, NextPageContext } from "next";
+import Button from "../../components/button";
 import Player from "../../components/player";
 import styles from '../../styles/Group.module.css'
 import { toGroup } from "../../utils/object.parser";
 
 const Group: NextPage = (props: any) => {    
+
     if(props.group.error) {
         return (
             <div>
                 <h1>Cannot find that group.</h1>
+                <Button type="primary" href="/">Go back</Button>
             </div>
         )
     }

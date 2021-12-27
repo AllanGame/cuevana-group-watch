@@ -5,6 +5,9 @@ import FormData from "form-data";
 
 type Data = {};
 
+/**
+ * Gets data from a cuevana URL
+ */
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
