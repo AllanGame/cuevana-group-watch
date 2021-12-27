@@ -8,7 +8,7 @@ const Group: NextPage = (props: any) => {
 
     if(props.group.error) {
         return (
-            <div>
+            <div className={styles.notFound}>
                 <h1>Cannot find that group.</h1>
                 <Button type="primary" href="/">Go back</Button>
             </div>

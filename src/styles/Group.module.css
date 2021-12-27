@@ -6,3 +6,11 @@
     background: #080F28;
     color: white;
 }
+
+.notFound {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-items: center;
+    color: white;
+}
