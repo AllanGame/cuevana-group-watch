@@ -10,7 +10,6 @@ interface Props {
 
 const GroupAccess: NextPage<Props> = (props): JSX.Element => { 
     const { push } = useRouter()
-    
     async function createGroupHandler() {
         const nicknameInput = document.getElementById('nickname') as any;
         const groupTitleInput = document.getElementById('title') as any;
@@ -19,9 +18,9 @@ const GroupAccess: NextPage<Props> = (props): JSX.Element => {
             alert('Nickname and group title are required.')
             return;
         }
-
+        
         try {
-            await fetch("http://localhost:3000/api/groups", {
+            await fetch(`${process.env.NEXT_PUBLIC_SERVER_PATH}/api/groups`, {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
