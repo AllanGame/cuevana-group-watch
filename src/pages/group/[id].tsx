@@ -19,9 +19,13 @@ const Group: NextPage = (props: any) => {
 
     return (
         <div className={styles.container}>
-            <h1>Welcome to <em>{group.title}</em></h1>
-            {/* <p>ID: {group.id}</p> */}
             <Player group={group} viewer={group.reference}></Player>
+            <div className={styles.debug}>
+                <p>origin: {group.currentVideo ? group.currentVideo.origin : 'n/p'}</p>
+                <p>{group.currentVideo ? 'video-source' : 'no source'}</p>
+                <p>group-title: {group.title}</p>
+                <p>member-count: {group.members.length}</p>
+            </div>
         </div>
     )
 }

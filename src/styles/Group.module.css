@@ -14,3 +14,11 @@
     justify-items: center;
     color: white;
 }
+
+.debug {
+    color: #AB9393;
+}
+
+.debug > p {
+    margin: 4px;
+}

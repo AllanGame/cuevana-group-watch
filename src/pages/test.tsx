@@ -13,7 +13,6 @@ const Test: NextPage = () => {
   
   return (
     <div className={styles.container}>
-        <QueueManager group={group}></QueueManager>
     </div>
 
 )
