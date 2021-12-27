@@ -1,34 +1,15 @@
 .playerContainer {
+    display: flex;
     height: 660px;
     width: 100%;
     background-color: black;
 }
 
-.queueManager {
-    width: 383px;
-    height: 100%;
-    float: left;
-    background-color: #0C1740;
-    color: #ffffff;
+.queueManagerWrapper {
+    flex-basis: 300px;
 }
 
 .video {
-    max-width: 70%;
-    width: 100%;
-    /* height: 100%; */
-}
-
-.queueItem {
-    width: 100%;
-    height: 100px;
-    background-color: #172050;
-    border-radius: 10px;
-}
-
-.videoUrl {
-    word-break: break-all;
-}
-
-.nose {
-    color: #000;
+    width: 1px;
+    flex-grow: 2;
 }

@@ -13,13 +13,12 @@ const Group: NextPage = (props: any) => {
     }
 
     let group = toGroup(props.group);
-    console.log(group);
 
     return (
         <div className={styles.container}>
             <h1>Welcome to <em>{group.title}</em></h1>
-            <p>ID: {group.id}</p>
-            <Player queue={group.queue} viewer={group.reference}></Player>
+            {/* <p>ID: {group.id}</p> */}
+            <Player group={group} viewer={group.reference}></Player>
         </div>
     )
 }

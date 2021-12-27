@@ -1,0 +1,33 @@
+.queueManagerContainer {
+    width: 380px;
+    height: 100%;
+    overflow-y: scroll;
+    background: #16181F;
+    overflow: hidden;   
+}
+
+.searchContainer {
+    width: 100%;
+    height: 40px;
+    border-bottom: 1px solid #AB9393;
+    padding: 25px 25px 40px 25px;
+}
+
+.searchInput {
+    background: none;
+    border: none;
+    color: #AB9393;
+    width: 300px;   
+    font-family: 'Pulp Display', sans-serif;
+    font-size: 18px; 
+}
+
+.searchInput:focus {
+    outline: none;
+}
+
+.searchBtn {
+    cursor: pointer;
+    display: none;
+    float: right;
+}
