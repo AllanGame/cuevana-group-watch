@@ -31,7 +31,7 @@ const Group: NextPage = (props: any) => {
 }
 
 export async function getServerSideProps(context: NextPageContext) {
-    const res = await fetch(process.env.NEXT_PUBLIC_SERVER_PATH+"/api/groups/" + context.query.id);
+    const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_PATH}/api/groups/${context.query.id}`);
     const group = await res.json();
 
     return {
