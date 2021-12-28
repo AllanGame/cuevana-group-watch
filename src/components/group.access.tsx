@@ -32,7 +32,6 @@ const GroupAccess: NextPage<Props> = (props): JSX.Element => {
             }).then(response => {
               return response.json()
             }).then(data => {
-              console.log(data);
               push('/group/'+data.id)
             })
           } catch (error) {

@@ -1,3 +1,4 @@
+import Video from "../common/video";
 import User from "../users/user";
 import Group from "./group";
 
@@ -7,6 +8,8 @@ export class GroupManager {
 
     createGroup(groupTitle: string, user: User): Group {
         let group = new Group(this.generateId(), groupTitle, user);
+        group.queue = [new Video(user, "https://cuevana3.io/episodio/hawkeye-1x1")]
+        group.currentVideo = group.queue[0];
         this.groups.set(group.id, group);
         return group;
     }
