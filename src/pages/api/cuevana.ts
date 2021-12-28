@@ -29,11 +29,18 @@ export default async function handler(
         } as any);
         const cuevanaClient = cheerio.load(cuevanaClientResponse.data);
 
+
+        if(!cuevanaClient("div#OptL1 > iframe.no-you").attr("data-src")) {
+          throw {
+            message: "[DEBUG] cuevanaClient is null",
+            test: cuevanaClient("div#OptL1 > iframe.no-you").attr("src")
+          }
+        }
+
         const tomatometelaAnonymizerResponse = await axios({
           method: "get",
           url:
-            "https:" +
-            cuevanaClient("div#OptL1 > iframe.no-you").attr("data-src"),
+            "https:" + cuevanaClient("div#OptL1 > iframe.no-you").attr("data-src"),
         });
         const tomatometelaAnonymizer = cheerio.load(
           tomatometelaAnonymizerResponse.data
