@@ -6,12 +6,4 @@ export default class User {
     constructor(nickname: string) {
         this.nickname = nickname;
     }
-
-    setCurrentTime(time: number) {
-        this.currentTime = time;
-    }
-
-    setPaused(paused: boolean) {
-        this.paused = paused;
-    }
 }

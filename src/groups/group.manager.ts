@@ -15,10 +15,12 @@ export class GroupManager {
     }
 }
 
+// TODO: Find another way to do this, i don't know too much about hooks but check useMemo idk
 let groupManager: GroupManager;
 export function createGroupManager() {
     if(!groupManager) {
         groupManager = new GroupManager();
     }
+
     return groupManager;
 }
