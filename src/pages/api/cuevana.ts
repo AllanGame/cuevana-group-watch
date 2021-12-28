@@ -28,7 +28,8 @@ export default async function handler(
           url: videoUrl,
         } as any);
         const cuevanaClient = cheerio.load(cuevanaClientResponse.data);
-        console.log(cuevanaClientResponse.data);
+
+        console.log(cuevanaClient())
 
         const tomatometelaAnonymizerResponse = await axios({
           method: "get",
