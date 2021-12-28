@@ -32,7 +32,7 @@ export default async function handler(
 
         if(!cuevanaClient("div#OptL1 > iframe.no-you").attr("data-src")) {
           throw {
-            message: "[DEBUG] cuevanaClient is null, " + cuevanaClient("div#OptL1 > iframe.no-you").attr("src")+".",
+            message: "[DEBUG] cuevanaClient is null, " + cuevanaClient("div#OptL1 > iframe.no-you").html()+".",
           }
         }
 
