@@ -85,7 +85,7 @@ export default async function handler(
 
         return res.status(200).json({ src: videoUrlResponse.data.file });
       } catch (error) {
-        return res.status(500).json({ error: "invalid url" });
+        return res.status(500).json({ error });
       }
 
     default:
