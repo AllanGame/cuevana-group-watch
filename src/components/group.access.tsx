@@ -2,13 +2,15 @@ import { NextPage } from "next";
 import Button from "./button";
 import styles from '../styles/components/group.access.module.css';
 import { useRouter } from "next/router";
-;
+import {useContext} from "react";
+import {UserContext} from "../users/user.context";
 
 interface Props {
     create: boolean;
 }
 
-const GroupAccess: NextPage<Props> = (props): JSX.Element => { 
+const GroupAccess: NextPage<Props> = (props): JSX.Element => {
+    const {user, setUser} = useContext(UserContext) as any;
     const { push } = useRouter()
     async function createGroupHandler() {
         const nicknameInput = document.getElementById('nickname') as any;
@@ -20,7 +22,7 @@ const GroupAccess: NextPage<Props> = (props): JSX.Element => {
         }
         
         try {
-            await fetch(`${process.env.NEXT_PUBLIC_SERVER_PATH}/api/groups`, {
+            await fetch(`${process.env.NEXT_PUBLIC_SERVER_PATH || 'http://localhost:3000'}/api/groups`, {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
@@ -32,6 +34,7 @@ const GroupAccess: NextPage<Props> = (props): JSX.Element => {
             }).then(response => {
               return response.json()
             }).then(data => {
+                setUser([{currentTime: 0, paused: false, nickname: nicknameInput.value}])
               push('/group/'+data.id)
             })
           } catch (error) {

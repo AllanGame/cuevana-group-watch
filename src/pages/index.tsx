@@ -6,10 +6,9 @@ const Home: NextPage = () => {
 
   return (
     <div className={styles.container}>
-      <GroupAccess create={true}></GroupAccess>
+        <GroupAccess create={true}/>
     </div>
-
-)
+ )
 }
 
 export default Home

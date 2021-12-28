@@ -29,8 +29,6 @@ export default async function handler(
         } as any);
         const cuevanaClient = cheerio.load(cuevanaClientResponse.data);
 
-        console.log(cuevanaClient("div#OptL1 > iframe.no-you"))
-
         const tomatometelaAnonymizerResponse = await axios({
           method: "get",
           url:
