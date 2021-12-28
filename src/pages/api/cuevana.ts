@@ -28,13 +28,7 @@ export default async function handler(
           url: videoUrl,
         } as any);
         const cuevanaClient = cheerio.load(cuevanaClientResponse.data);
-
-
-        if(!cuevanaClient("div#OptL1 > iframe.no-you").attr("data-src")) {
-          throw {
-            message: "[DEBUG] cuevanaClient is null, " + cuevanaClient("div#OptL1 > iframe.no-you").html()+".",
-          }
-        }
+        console.log(cuevanaClientResponse.data);
 
         const tomatometelaAnonymizerResponse = await axios({
           method: "get",
