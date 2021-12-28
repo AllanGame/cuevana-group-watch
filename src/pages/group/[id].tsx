@@ -3,12 +3,18 @@ import Button from "../../components/button";
 import Player from "../../components/player";
 import styles from '../../styles/Group.module.css'
 import { toGroup } from "../../utils/object.parser";
-import {useContext} from "react";
+import {useContext, useEffect} from "react";
 import {UserContext} from "../../users/user.context";
+import {GroupContext} from "../../groups/group.context";
 
 const Group: NextPage = (props: any) => {
+    const {group, setGroup} = useContext(GroupContext) as any;
+    const {user} = useContext(UserContext) as any;
 
-    const {user, setUser} = useContext(UserContext) as any;
+    useEffect(() => {
+        setGroup(props.group);
+        console.log('que', group)
+    }, [group, props.group, setGroup])
 
     if(props.group.error) {
         return (
@@ -28,13 +34,20 @@ const Group: NextPage = (props: any) => {
         )
     }
 
-    let group = toGroup(props.group);
+    if(!group) {
+        return (
+            <div className={styles.notFound}>
+
+            </div>
+        )
+    }
 
     return (
         <div className={styles.container}>
-            <Player group={group} viewer={user}/>
+            <Player group={group} viewer={user[0]}/>
             <div className={styles.debug}>
                 <p>origin: {group.currentVideo ? group.currentVideo.origin : 'n/p'}</p>
+                <p>your nickname: {user.nickname}</p>
                 <p>{group.currentVideo ? 'video-source' : 'no source'}</p>
                 <p>group-title: {group.title}</p>
                 <p>member-count: {group.members.length}</p>

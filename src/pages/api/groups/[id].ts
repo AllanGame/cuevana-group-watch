@@ -20,10 +20,9 @@ export default function handler(
       
     case "PUT":
       if(!group) return res.status(404).json({error: 'Group not found.'})
-
       body.id = group.id;
       group = toGroup(body);
-   
+      groupManager.groups.set(group.id, group);
       return res.status(200).json(group);
     default:
       return res.status(500).json({error: "Unsupported operation"})

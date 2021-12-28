@@ -77,3 +77,14 @@
     top: 60px;
     padding: 0px 40px 0px 20px;
 }
+
+.joinGroupContainer {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 466px;
+    height: 235px;
+    border-radius: 7px;
+    background: #0C1740;
+}
