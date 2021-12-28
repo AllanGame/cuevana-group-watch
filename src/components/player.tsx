@@ -13,7 +13,7 @@ interface Props {
 const Player: NextPage<Props> =  (props): JSX.Element => {
     if(props.group.currentVideo) {
         // Set default video
-        setSource(props.group.currentVideo?.origin);
+        setSource(props.group.currentVideo?.origin, document);
     }
 
     return (

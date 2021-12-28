@@ -1,4 +1,4 @@
-function setSource(origin: any) {
+function setSource(origin: any, document: Document) {
     fetch(`${process.env.NEXT_PUBLIC_SERVER_PATH}/api/cuevana?url=${origin}`)
     .then(res => res.json())
     .then(data => {
