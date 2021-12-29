@@ -2,19 +2,23 @@ import { NextPage, NextPageContext } from "next";
 import Button from "../../components/button";
 import Player from "../../components/player";
 import styles from '../../styles/Group.module.css'
-import { toGroup } from "../../utils/object.parser";
-import {useContext, useEffect} from "react";
+import {useContext, useEffect, useState} from "react";
 import {UserContext} from "../../users/user.context";
 import {GroupContext} from "../../groups/group.context";
 
-const Group: NextPage = (props: any) => {
+const GroupPage: NextPage = (props: any) => {
     const {group, setGroup} = useContext(GroupContext) as any;
     const {user} = useContext(UserContext) as any;
 
     useEffect(() => {
-        setGroup(props.group);
-        console.log('que', group)
-    }, [group, props.group, setGroup])
+        if(props.group.error || !user[0]) {
+            return;
+        }
+        fetch('/api/socketio').finally(() => {
+            setGroup(props.group.error ? null : props.group);
+        })
+
+    }, [])
 
     if(props.group.error) {
         return (
@@ -24,8 +28,7 @@ const Group: NextPage = (props: any) => {
             </div>
         )
     }
-
-    if(!user) {
+    if(!user[0]) {
         return (
             <div className={styles.notFound}>
                 <h1>You haven&apos;t registered yet.</h1>
@@ -33,7 +36,6 @@ const Group: NextPage = (props: any) => {
             </div>
         )
     }
-
     if(!group) {
         return (
             <div className={styles.notFound}>
@@ -47,10 +49,10 @@ const Group: NextPage = (props: any) => {
             <Player group={group} viewer={user[0]}/>
             <div className={styles.debug}>
                 <p>origin: {group.currentVideo ? group.currentVideo.origin : 'n/p'}</p>
-                <p>your nickname: {user.nickname}</p>
+                <p>your nickname: {user[0].nickname}</p>
                 <p>{group.currentVideo ? 'video-source' : 'no source'}</p>
                 <p>group-title: {group.title}</p>
-                <p>member-count: {group.members.length}</p>
+                <p>member-count: {JSON.stringify(group.members)}</p>
             </div>
         </div>
     )
@@ -67,4 +69,4 @@ export async function getServerSideProps(context: NextPageContext) {
     };
 }
 
-export default Group;
+export default GroupPage;
