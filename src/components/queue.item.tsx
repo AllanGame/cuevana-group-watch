@@ -8,7 +8,11 @@ interface Props {
     title: string;
     duration: string;
     addedBy: User;
+    type: 'queueItem' | 'searchItem'
+    onAdd?: () => void
 }
+
+
 
 export default class QueueItem extends Component<Props> {
     constructor(props: Props | Readonly<Props>) {
@@ -18,8 +22,18 @@ export default class QueueItem extends Component<Props> {
     render(): ReactNode {
         return (
             <div className={styles.itemContainer}>
-                <div className={styles.dragWrapper}>
-                    <FontAwesomeIcon icon="grip-vertical" color="#AB9393"/>
+                <div className={styles.action}>
+                    {
+                        this.props.type === 'searchItem' ?
+                            <FontAwesomeIcon
+                                className={styles.addBtn}
+                                icon="plus"
+                                color="#AB9393"
+                                onClick={this.props.onAdd ? this.props.onAdd : () => {}}/>
+                            :
+                            <FontAwesomeIcon className={styles.dragBtn} icon="grip-vertical" color="#AB9393"/>
+                    }
+
                 </div>
                 <div className={styles.card}>
                     <img className={styles.poster} src={this.props.posterSrc} alt="movie poster" />

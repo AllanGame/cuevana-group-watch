@@ -3,7 +3,7 @@ import { Server } from 'socket.io'
 
 export default async function handler(
     req: NextApiRequest,
-    res: NextApiResponse<any>
+    res: NextApiResponse
 ) {
     // @ts-ignore
     if (!res.socket.server.io) {

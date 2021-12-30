@@ -15,7 +15,7 @@ interface Props {
 
 let socket: Socket<DefaultEventsMap, DefaultEventsMap>;
 
-const Player: NextPage<Props> =  (props): JSX.Element => {
+const Player: NextPage<Props> = (props): JSX.Element => {
     const {group, setGroup} = useContext(GroupContext) as any;
     const [viewState, setViewState] = useState({
         time: 0,
@@ -82,7 +82,7 @@ const Player: NextPage<Props> =  (props): JSX.Element => {
     return (
         <div className={styles.playerContainer}>
             <div className={styles.queueManagerWrapper}>
-                <QueueManager group={props.group} viewer={props.viewer}/>
+                <QueueManager group={props.group} viewer={props.viewer} socket={socket}/>
             </div>
             <video
                 src="https://cdn.discordapp.com/attachments/856551768317755432/925527214173335562/1171F04B-9802-4A90-B9D1-0E37897B6993.mov"

@@ -11,7 +11,7 @@ const GroupPage: NextPage = (props: any) => {
     const {user} = useContext(UserContext) as any;
 
     useEffect(() => {
-        if(props.group.error || !user[0]) {
+        if(props.group.error || !user || !user[0]) {
             return;
         }
         fetch('/api/socketio').finally(() => {
@@ -28,7 +28,7 @@ const GroupPage: NextPage = (props: any) => {
             </div>
         )
     }
-    if(!user[0]) {
+    if(!user) {
         return (
             <div className={styles.notFound}>
                 <h1>You haven&apos;t registered yet.</h1>
