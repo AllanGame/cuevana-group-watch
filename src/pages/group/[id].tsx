@@ -1,6 +1,6 @@
 import { NextPage, NextPageContext } from "next";
-import Button from "../../components/button";
-import Player from "../../components/player";
+import Button from "../../components/ui/button";
+import Player from "../../components/player/player";
 import styles from '../../styles/Group.module.css'
 import {useContext, useEffect, useState} from "react";
 import {UserContext} from "../../users/user.context";

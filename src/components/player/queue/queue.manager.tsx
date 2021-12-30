@@ -1,17 +1,13 @@
-import styles from '../styles/components/QueueManager.module.css';
+import styles from '../../../styles/components/QueueManager.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import Group from "../groups/group";
-import User from "../users/user";
+import Group from "../../../groups/group";
+import User from "../../../users/user";
 import QueueItem from "./queue.item";
 import {Socket} from "socket.io-client";
 import {DefaultEventsMap} from "@socket.io/component-emitter";
 import {NextPage} from "next";
 import axios from "axios";
-import cheerio from "cheerio";
 import {useEffect, useState} from "react";
-import Video from "../common/video";
-import {prev} from "cheerio/lib/api/traversing";
-import {getPreviousStatement} from "tsutils";
 
 const URL_REGEX = new RegExp(
     /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
@@ -32,9 +28,6 @@ const QueueManager: NextPage<Props> = (props): JSX.Element => {
         queueItems: []
     }) as any;
 
-    useEffect(() => {
-        console.log(queueContainerState);
-    }, [queueContainerState, setQueueContainerState])
 
     return (
         <div className={styles.queueManagerContainer}>

@@ -1,7 +1,7 @@
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { MouseEventHandler } from "react";
-import styles from '../styles/components/Button.module.css';
+import styles from '../../styles/components/Button.module.css';
 
 interface Props {
     type: 'primary' | 'secondary'

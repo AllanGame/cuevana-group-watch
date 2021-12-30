@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Component, ReactNode } from "react";
-import styles from '../styles/components/queue.item.module.css';
-import User from "../users/user";
+import styles from '../../../styles/components/queue.item.module.css';
+import User from "../../../users/user";
 
 interface Props {
     posterSrc: string;

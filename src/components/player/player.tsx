@@ -1,11 +1,11 @@
 import { NextPage } from "next";
-import Group from "../groups/group";
-import styles from '../styles/components/Player.module.css'
-import User from "../users/user";
-import QueueManager from "./queue.manager";
+import Group from "../../groups/group";
+import styles from '../../styles/components/Player.module.css'
+import User from "../../users/user";
+import QueueManager from "./queue/queue.manager";
 import {SyntheticEvent, useContext, useEffect, useState} from "react";
 import io, { Socket } from "socket.io-client";
-import {GroupContext} from "../groups/group.context";
+import {GroupContext} from "../../groups/group.context";
 import {DefaultEventsMap} from "@socket.io/component-emitter";
 
 interface Props {

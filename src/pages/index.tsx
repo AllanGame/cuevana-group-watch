@@ -1,5 +1,5 @@
 import type { NextPage } from 'next'
-import GroupAccess from '../components/group.access'
+import GroupAccess from '../components/auth/group.access'
 import styles from '../styles/Home.module.css'
 
 const Home: NextPage = () => {

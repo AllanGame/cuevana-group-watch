@@ -1,11 +1,11 @@
 import { NextPage } from "next";
-import Button from "./button";
-import styles from '../styles/components/group.access.module.css';
+import Button from "../ui/button";
+import styles from '../../styles/components/group.access.module.css';
 import { useRouter } from "next/router";
 import {useContext, useState} from "react";
-import {UserContext} from "../users/user.context";
-import {toGroup, toJSON} from "../utils/object.parser";
-import User from "../users/user";
+import {UserContext} from "../../users/user.context";
+import {toGroup, toJSON} from "../../utils/object.parser";
+import User from "../../users/user";
 
 interface Props {
     create: boolean;
