@@ -16,9 +16,10 @@ const SearchContainer: NextPage<Props> = (props): JSX.Element => {
     return (
         <div className={props.className}>
             {props.searched ?
-                props.searchItems.map((item: any) =>
+                props.searchItems.map((item: any, index) =>
                     (
                         <SearchItem
+                            key={`searchItem-${index}`}
                             posterSrc={item.posterSrc}
                             title={item.title}
                             onAdd={() => {

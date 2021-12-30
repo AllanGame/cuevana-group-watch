@@ -13,9 +13,10 @@ const QueueContainer: NextPage<Props> = (props): JSX.Element => {
     return (
         <div className={props.className}>
             {
-                props.queueItems.map((item: any) =>
+                props.queueItems.map((item: any, index) =>
                     (
                         <QueueItem
+                            key={`searchItem-${index}`}
                             addedBy={item.addedBy}
                             duration={item.duration}
                             posterSrc={item.posterSrc}
