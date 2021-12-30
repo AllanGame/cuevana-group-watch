@@ -2,13 +2,15 @@ import styles from '../../../styles/components/QueueManager.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Group from "../../../groups/group";
 import User from "../../../users/user";
-import QueueItem from "./queue.item";
+import QueueItem from "./item/queue.item";
 import {Socket} from "socket.io-client";
 import {DefaultEventsMap} from "@socket.io/component-emitter";
 import {NextPage} from "next";
 import axios from "axios";
 import {useEffect, useState} from "react";
-import SearchItem from "./search.item";
+import SearchItem from "./item/search.item";
+import SearchContainer from "./container/search.container";
+import QueueContainer from "./container/queue.container";
 
 const URL_REGEX = new RegExp(
     /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
@@ -29,48 +31,25 @@ const QueueManager: NextPage<Props> = (props): JSX.Element => {
         queueItems: []
     }) as any;
 
-
     return (
         <div className={styles.queueManagerContainer}>
             <div className={styles.searchContainer}>
                 <input className={styles.searchInput} type="text" name="searchInput" id="searchInput" placeholder="Search or paste video" onChange={handleTyping} onKeyPress={handleEnterKey}/>
                 <FontAwesomeIcon className={styles.searchBtn} icon="arrow-right" color="#AB9393" onClick={handleSearch}/>
             </div>
-            <div id="queueContainer" className={styles.queueContainer}>
-                {queueContainerState.searching ?
-                    queueContainerState.searched ?
-                        queueContainerState.searchItems.map((item: any) => {
-                            return (
-                                <SearchItem posterSrc={item.posterSrc} title={item.title} onAdd={() => {
-                                    setQueueContainerState({
-                                        ...queueContainerState,
-                                        searching: false,
-                                        searched: false,
-                                        queueItems: queueContainerState.queueItems.concat([{
-                                            addedBy: item.addedBy,
-                                            duration: item.duration,
-                                            posterSrc: item.posterSrc,
-                                            title: item.title
-                                        }])
-                                    })
-                                }}/>
-                            )
-                        })
-                        :
-                        <h1>Enter to search</h1>
-                    :
-                    queueContainerState.queueItems.map((item: any) => {
-                        return (
-                            <QueueItem
-                                addedBy={item.addedBy}
-                                duration={item.duration}
-                                posterSrc={item.posterSrc}
-                                title={item.title}
-                            />
-                        )
-                    })
-                }
-            </div>
+            {queueContainerState.searching ?
+                <SearchContainer
+                    className={styles.queueContainer}
+                    searchItems={queueContainerState.searchItems}
+                    searched={queueContainerState.searched}
+                    stateModifier={setQueueContainerState}
+                />
+                :
+                <QueueContainer
+                    className={styles.queueContainer}
+                    queueItems={queueContainerState.queueItems}
+                />
+            }
         </div>
     )
 

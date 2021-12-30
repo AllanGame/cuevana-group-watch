@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import styles from '../../../styles/components/queue.item.module.css';
-import User from "../../../users/user";
+import styles from '../../../../styles/components/queue.item.module.css';
+import User from "../../../../users/user";
 import {NextPage} from "next";
 
 interface Props {
