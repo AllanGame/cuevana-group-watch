@@ -85,7 +85,6 @@ const Player: NextPage<Props> = (props): JSX.Element => {
                 <QueueManager group={props.group} viewer={props.viewer} socket={socket}/>
             </div>
             <video
-                src="https://cdn.discordapp.com/attachments/856551768317755432/925527214173335562/1171F04B-9802-4A90-B9D1-0E37897B6993.mov"
                 id="player"
                 className={styles.video}
                 controls
