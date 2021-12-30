@@ -31,6 +31,10 @@ const QueueManager: NextPage<Props> = (props): JSX.Element => {
         queueItems: []
     }) as any;
 
+    useEffect(() => {
+        console.log(queueContainerState);
+    }, [queueContainerState, setQueueContainerState])
+
     return (
         <div className={styles.queueManagerContainer}>
             <div className={styles.searchContainer}>
@@ -100,12 +104,12 @@ const QueueManager: NextPage<Props> = (props): JSX.Element => {
             setQueueContainerState((prevState: any) => {
                 return {
                     ...prevState,
-                    searchItems: prevState.queueItems.concat([{
+                    searchItems: [{
                         posterSrc: poster,
                         title,
                         duration: "1h 2m",
                         addedBy: props.viewer
-                    }] as any),
+                    }],
                     searching: true,
                     searched: true
                 }

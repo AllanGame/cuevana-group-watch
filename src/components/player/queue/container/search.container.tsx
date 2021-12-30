@@ -28,6 +28,7 @@ const SearchContainer: NextPage<Props> = (props): JSX.Element => {
                                         ...queueContainerState,
                                         searching: false,
                                         searched: false,
+                                        searchItems: [],
                                         queueItems: queueContainerState.queueItems.concat([{
                                             addedBy: item.addedBy,
                                             duration: item.duration,
