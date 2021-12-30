@@ -1,10 +1,12 @@
 import type {NextPage} from "next";
 import SearchItem from "../item/search.item";
+import {QueueManagerState, VideoItemData} from "../../../../common/types";
+import {Dispatch, SetStateAction} from "react";
 
 interface Props {
     searched: boolean;
-    searchItems: object[];
-    stateModifier: any;
+    searchItems: VideoItemData[];
+    stateModifier: Dispatch<SetStateAction<QueueManagerState>>;
     className: string;
 }
 
@@ -16,20 +18,20 @@ const SearchContainer: NextPage<Props> = (props): JSX.Element => {
     return (
         <div className={props.className}>
             {props.searched ?
-                props.searchItems.map((item: any, index) =>
+                props.searchItems.map((item, index) =>
                     (
                         <SearchItem
                             key={`searchItem-${index}`}
                             posterSrc={item.posterSrc}
                             title={item.title}
                             onAdd={() => {
-                                props.stateModifier((queueContainerState: any) => {
+                                props.stateModifier((queueManagerState) => {
                                     return {
-                                        ...queueContainerState,
+                                        ...queueManagerState,
                                         searching: false,
                                         searched: false,
                                         searchItems: [],
-                                        queueItems: queueContainerState.queueItems.concat([{
+                                        queueItems: queueManagerState.queueItems.concat([{
                                             addedBy: item.addedBy,
                                             duration: item.duration,
                                             posterSrc: item.posterSrc,

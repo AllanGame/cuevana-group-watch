@@ -7,6 +7,7 @@ import {SyntheticEvent, useContext, useEffect, useState} from "react";
 import io, { Socket } from "socket.io-client";
 import {GroupContext} from "../../groups/group.context";
 import {DefaultEventsMap} from "@socket.io/component-emitter";
+import {ViewState} from "../../common/types";
 
 interface Props {
     group: Group
@@ -17,7 +18,7 @@ let socket: Socket<DefaultEventsMap, DefaultEventsMap>;
 
 const Player: NextPage<Props> = (props): JSX.Element => {
     const {group, setGroup} = useContext(GroupContext) as any;
-    const [viewState, setViewState] = useState({
+    const [viewState, setViewState] = useState<ViewState>({
         time: 0,
         playing: false,
         groupId: group.id,
@@ -38,8 +39,7 @@ const Player: NextPage<Props> = (props): JSX.Element => {
             setGroup(newGroup);
         })
 
-        socket.on('viewUpdate', (viewState) => {
-            console.log(viewState);
+        socket.on('viewUpdate', (viewState: ViewState) => {
             if(viewState.user.nickname === props.viewer.nickname) {
                 return;
             }
@@ -67,7 +67,7 @@ const Player: NextPage<Props> = (props): JSX.Element => {
             time: event.currentTarget.currentTime,
             playing: !event.currentTarget.paused,
             user: props.viewer
-        });
+        } as ViewState);
     }
 
     function handlePause(event: SyntheticEvent<HTMLVideoElement, Event>) {
@@ -76,7 +76,7 @@ const Player: NextPage<Props> = (props): JSX.Element => {
             time: event.currentTarget.currentTime,
             playing: !event.currentTarget.paused,
             user: props.viewer
-        });
+        } as ViewState);
     }
 
     return (

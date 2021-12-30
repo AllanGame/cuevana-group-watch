@@ -11,6 +11,7 @@ import {useEffect, useState} from "react";
 import SearchItem from "./item/search.item";
 import SearchContainer from "./container/search.container";
 import QueueContainer from "./container/queue.container";
+import {QueueManagerState} from "../../../common/types";
 
 const URL_REGEX = new RegExp(
     /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
@@ -24,12 +25,12 @@ interface Props {
 
 const QueueManager: NextPage<Props> = (props): JSX.Element => {
 
-    const [queueContainerState, setQueueContainerState] = useState({
+    const [queueManagerState, setQueueManagerState] = useState<QueueManagerState>({
         searching: false,
         searched: false,
         searchItems: [],
         queueItems: []
-    }) as any;
+    });
 
     return (
         <div className={styles.queueManagerContainer}>
@@ -37,17 +38,17 @@ const QueueManager: NextPage<Props> = (props): JSX.Element => {
                 <input className={styles.searchInput} type="text" name="searchInput" id="searchInput" placeholder="Search or paste video" onChange={handleTyping} onKeyPress={handleEnterKey}/>
                 <FontAwesomeIcon className={styles.searchBtn} icon="arrow-right" color="#AB9393" onClick={handleSearch}/>
             </div>
-            {queueContainerState.searching ?
+            {queueManagerState.searching ?
                 <SearchContainer
                     className={styles.queueContainer}
-                    searchItems={queueContainerState.searchItems}
-                    searched={queueContainerState.searched}
-                    stateModifier={setQueueContainerState}
+                    searchItems={queueManagerState.searchItems}
+                    searched={queueManagerState.searched}
+                    stateModifier={setQueueManagerState}
                 />
                 :
                 <QueueContainer
                     className={styles.queueContainer}
-                    queueItems={queueContainerState.queueItems}
+                    queueItems={queueManagerState.queueItems}
                 />
             }
         </div>
@@ -64,7 +65,7 @@ const QueueManager: NextPage<Props> = (props): JSX.Element => {
         let searchBtn = document.getElementsByClassName(styles.searchBtn)[0] as any;
         if(e.target.value.length > 0) {
             searchBtn.style.display = "block"
-            setQueueContainerState((prevState: any) => {
+            setQueueManagerState((prevState: any) => {
                 return {
                     ...prevState,
                     searching: true,
@@ -73,7 +74,7 @@ const QueueManager: NextPage<Props> = (props): JSX.Element => {
             });
         } else {
             searchBtn.style.display = "none"
-            setQueueContainerState((prevState: any) => {
+            setQueueManagerState((prevState: any) => {
                 return {
                     ...prevState,
                     searching: false,
@@ -97,7 +98,7 @@ const QueueManager: NextPage<Props> = (props): JSX.Element => {
             })
 
             let {title, poster} = originRequestResponse.data;
-            setQueueContainerState((prevState: any) => {
+            setQueueManagerState((prevState) => {
                 return {
                     ...prevState,
                     searchItems: [{
