@@ -31,10 +31,6 @@ const QueueManager: NextPage<Props> = (props): JSX.Element => {
         queueItems: []
     }) as any;
 
-    useEffect(() => {
-        console.log(queueContainerState);
-    }, [queueContainerState, setQueueContainerState])
-
     return (
         <div className={styles.queueManagerContainer}>
             <div className={styles.searchContainer}>
