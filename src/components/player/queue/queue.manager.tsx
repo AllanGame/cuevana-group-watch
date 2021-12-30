@@ -8,6 +8,7 @@ import {DefaultEventsMap} from "@socket.io/component-emitter";
 import {NextPage} from "next";
 import axios from "axios";
 import {useEffect, useState} from "react";
+import SearchItem from "./search.item";
 
 const URL_REGEX = new RegExp(
     /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
@@ -40,21 +41,19 @@ const QueueManager: NextPage<Props> = (props): JSX.Element => {
                     queueContainerState.searched ?
                         queueContainerState.searchItems.map((item: any) => {
                             return (
-                                <QueueItem
-                                    addedBy={item.addedBy}
-                                    duration={item.duration}
-                                    posterSrc={item.posterSrc}
-                                    title={item.title}
-                                    type="searchItem"
-                                    onAdd={() => {
-                                        setQueueContainerState({
-                                            ...queueContainerState,
-                                            searching: false,
-                                            searched: false,
-                                            queueItems: queueContainerState.queueItems.concat([{addedBy: item.addedBy, duration: item.duration, posterSrc: item.posterSrc, title: item.title}])
-                                        })
-                                    }}
-                                />
+                                <SearchItem posterSrc={item.posterSrc} title={item.title} onAdd={() => {
+                                    setQueueContainerState({
+                                        ...queueContainerState,
+                                        searching: false,
+                                        searched: false,
+                                        queueItems: queueContainerState.queueItems.concat([{
+                                            addedBy: item.addedBy,
+                                            duration: item.duration,
+                                            posterSrc: item.posterSrc,
+                                            title: item.title
+                                        }])
+                                    })
+                                }}/>
                             )
                         })
                         :
@@ -67,7 +66,6 @@ const QueueManager: NextPage<Props> = (props): JSX.Element => {
                                 duration={item.duration}
                                 posterSrc={item.posterSrc}
                                 title={item.title}
-                                type="queueItem"
                             />
                         )
                     })
@@ -76,11 +74,6 @@ const QueueManager: NextPage<Props> = (props): JSX.Element => {
         </div>
     )
 
-    function displayQueue() {
-        let queueContainer = document.getElementById('queueContainer') as any;
-        queueContainer.classList.add("queueContainerLoading")
-        let queueItems: object[] = [];
-    }
 
     function handleEnterKey(e: any) {
         if(e.charCode == 13 && e.target.value.length > 0) {
@@ -125,11 +118,15 @@ const QueueManager: NextPage<Props> = (props): JSX.Element => {
             })
 
             let {title, poster} = originRequestResponse.data;
-
             setQueueContainerState((prevState: any) => {
                 return {
                     ...prevState,
-                    searchItems: prevState.queueItems.concat([{posterSrc: poster, title, duration: "1h 2m", addedBy: props.viewer}] as any),
+                    searchItems: prevState.queueItems.concat([{
+                        posterSrc: poster,
+                        title,
+                        duration: "1h 2m",
+                        addedBy: props.viewer
+                    }] as any),
                     searching: true,
                     searched: true
                 }

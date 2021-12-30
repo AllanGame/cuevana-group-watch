@@ -31,21 +31,19 @@
 }
 
 .duration {
-    margin: 0px 0px 0px 10px;
+    margin: 0 0 0 10px;
+    color: gray;
 }
 
 .addedBy {
-    margin: 15px 0px 10px 10px;
+    margin: 15px 0 10px 10px;
+    color: gray;
 }
 
 .poster {
     width: 80px;
     height: 120px;
     border-radius: 16px;    
-}
-
-.gray {
-    color: gray;
 }
 
 .addBtn {
