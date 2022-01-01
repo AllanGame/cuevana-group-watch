@@ -18,12 +18,12 @@ interface Props {
 let socket: Socket<DefaultEventsMap, DefaultEventsMap>;
 
 // TODO: video.currentTime = ... is very slow, find another way to make it faster
-// TODO: You can't close QueueManager
 // TODO: Move all functions to another file called player.interactions.tsx
 // TODO: Show tooltip with time when hovering the progress bar
 const Player: NextPage<Props> = (props): JSX.Element => {
     const {group, setGroup} = useContext(GroupContext) as any;
     const [isConnected, setIsConnected] = useState(false);
+    const [isQueueManagerVisible, setIsQueueManagerVisible] = useState(true);
     const [viewState, setViewState] = useState<ViewState>({
         time: 0,
         playing: false,
@@ -107,9 +107,12 @@ const Player: NextPage<Props> = (props): JSX.Element => {
 
     return (
         <div className={styles.playerContainer} id="playerContainer">
-            <div className={styles.queueManagerWrapper}>
+            {/* QueueManager */}
+            <div className={isQueueManagerVisible ? styles.queueManagerWrapper : styles.queueManagerWrapperInvisible}>
                 <QueueManager group={props.group} viewer={props.viewer} socket={socket}/>
             </div>
+
+            {/*Video*/}
             <div className={styles.videoWrapper} >
                 <video
                     id="player"
@@ -118,6 +121,8 @@ const Player: NextPage<Props> = (props): JSX.Element => {
                     onTimeUpdate={handleTimeUpdate}
                     onClick={togglePlay}
                 />
+
+                {/* Custom Controls */}
                 <div className={styles.controller}>
                     <div className={styles.progressWrapper} onClick={handleProgressBarClick}>
                         <div className={styles.videoProgress} id="videoProgress">
@@ -130,6 +135,10 @@ const Player: NextPage<Props> = (props): JSX.Element => {
                                 <FontAwesomeIcon className={styles.option} icon={viewState.playing ? 'pause' : 'play'} onClick={togglePlay}/>
                                 <FontAwesomeIcon className={styles.option} icon="undo" onClick={rewind}/>
                                 <FontAwesomeIcon className={styles.option} icon="volume-up" onClick={togglePlay}/>
+                                {/*Toggle QueueManager Visible*/}
+                                <FontAwesomeIcon className={styles.option} icon={isQueueManagerVisible ? 'chevron-left' : 'chevron-right'} onClick={() => {
+                                    setIsQueueManagerVisible(prevState => !prevState);
+                                }}/>
                             </div>
                             <p id="timeIndicator">00:00 / 00:00</p>
                             <div className={styles.rightOptions}>
@@ -137,8 +146,10 @@ const Player: NextPage<Props> = (props): JSX.Element => {
                                 <FontAwesomeIcon className={styles.option} icon={localViewState.fullscreen ? 'expand' : 'compress'} onClick={toggleFullscreen}/>
                             </div>
                         </div>
+
                     </div>
                 </div>
+
             </div>
         </div>
     )

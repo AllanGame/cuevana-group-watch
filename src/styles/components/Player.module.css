@@ -9,6 +9,10 @@
     flex-basis: 300px;
 }
 
+.queueManagerWrapperInvisible {
+    display: none;
+}
+
 .videoWrapper {
     width: 1px;
     flex-grow: 2;

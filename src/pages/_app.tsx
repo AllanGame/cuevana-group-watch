@@ -16,7 +16,9 @@ import {
     faVolumeUp,
     faCompress,
     faExpand,
-    faCog
+    faCog,
+    faChevronLeft,
+    faChevronRight
 } from '@fortawesome/free-solid-svg-icons'
 import { useState } from 'react'
 import { UserContext } from '../users/user.context'
@@ -34,7 +36,9 @@ library.add(
     faVolumeUp,
     faCompress,
     faExpand,
-    faCog
+    faCog,
+    faChevronLeft,
+    faChevronRight
 );
 
 function MyApp({ Component, pageProps }: AppProps) {
