@@ -94,7 +94,7 @@ const QueueManager: NextPage<Props> = (props): JSX.Element => {
         try {
             let originRequestResponse = await axios({
                 method: 'GET',
-                url: 'http://localhost:3000/api/moviedata?url='+searchInput.value
+                url: `${process.env.NEXT_PUBLIC_SERVER_PATH || 'http://localhost:3000'}/api/moviedata?url=`+searchInput.value
             })
 
             let {title, poster} = originRequestResponse.data;
