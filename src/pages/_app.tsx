@@ -3,12 +3,39 @@ import type { AppProps } from 'next/app'
 
 // ICONS
 import { library } from '@fortawesome/fontawesome-svg-core'
-import {faArrowRight, faGripVertical, faPlus} from '@fortawesome/free-solid-svg-icons'
-import { useMemo, useState } from 'react'
-import User from '../users/user'
+import {
+    faArrowRight,
+    faGripVertical,
+    faPlus,
+    faPlay,
+    faPause,
+    faUndo,
+    faRedo,
+    faVolumeMute,
+    faVolumeDown,
+    faVolumeUp,
+    faCompress,
+    faExpand,
+    faCog
+} from '@fortawesome/free-solid-svg-icons'
+import { useState } from 'react'
 import { UserContext } from '../users/user.context'
 import {GroupContext} from "../groups/group.context";
-library.add(faArrowRight, faGripVertical, faPlus)
+library.add(
+    faArrowRight,
+    faGripVertical,
+    faPlus,
+    faPlay,
+    faPause,
+    faUndo,
+    faRedo,
+    faVolumeMute,
+    faVolumeDown,
+    faVolumeUp,
+    faCompress,
+    faExpand,
+    faCog
+);
 
 function MyApp({ Component, pageProps }: AppProps) {
     const [user, setUser] = useState(null);

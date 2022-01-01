@@ -7,6 +7,11 @@ export type ViewState = {
     user: User;
 }
 
+export type LocalViewState = {
+    fullscreen: boolean;
+    volume: number;
+}
+
 export type VideoItemData = {
     addedBy: User;
     duration: string;

@@ -1,6 +1,6 @@
 .playerContainer {
     display: flex;
-    height: 660px;
+    height: 600px;
     width: 100%;
     background-color: black;
 }
@@ -9,7 +9,69 @@
     flex-basis: 300px;
 }
 
-.video {
+.videoWrapper {
     width: 1px;
     flex-grow: 2;
+    position: relative;
+}
+
+.video {
+    width: 100%;
+    height: 100%;
+}
+
+.videoWrapper:hover .controller {
+    opacity: 1;
+}
+
+.controller {
+    opacity: 0;
+    position: absolute;
+    width: 100%;
+    height: 71px;
+    background-color: rgba(0, 0, 0, 0.7);
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 0 30px 10px 30px;
+
+    transition: opacity 100ms ease-in-out;
+}
+
+.progressWrapper {
+    position: relative;
+    bottom: 10px;
+}
+
+.videoProgress {
+    position: absolute;
+    display: flex;
+    width: 100%;
+    transition: 0.3s;
+    background: #343235;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.videoProgressFilled {
+    height: 5px;
+    width: 0;
+    background: #F3F2F3;
+}
+
+.videoProgress:hover {
+    transform: scale(1, 1.9);
+}
+
+.options {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.option {
+    font-size: 25px;
+    color: #F3F2F3;
+    margin: 20px 15px 5px 20px;
+    cursor: pointer;
 }
