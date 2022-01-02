@@ -30,8 +30,10 @@ export default async function handler(
         const cuevanaClient = cheerio.load(cuevanaClientResponse.data);
 
         return res.status(200).json({
+          tryingTo: videoUrl,
           url: `https:${cuevanaClient("div#OptL1 > iframe.no-you").attr("data-src")}`,
-          test: `https:${cuevanaClient("div#OptL1 > iframe.no-you").attr("src")}`
+          test: `https:${cuevanaClient("div#OptL1 > iframe.no-you").attr("src")}`,
+          html: cuevanaClient.html()
         })
       } catch (error) {
         return res.status(500).json({ error });
