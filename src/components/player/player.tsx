@@ -29,20 +29,35 @@ const Player: NextPage<Props> = (props): JSX.Element => {
     const [socketState, setSocketState] = useState<Socket<DefaultEventsMap, DefaultEventsMap>>(socket);
     const [currentVideo, setCurrentVideo] = useState<Video | undefined>(undefined);
 
-    // Handle currentPlaying
+    // Update currentVideo when queue changes (If the playing video changes)
     useEffect(() => {
-        let video: Video | undefined = group.viewState.queue.find((video: Video) => video.isPlaying);
-        if(!video || video == currentVideo) {
+        let nowPlayingVideo: Video | undefined = group.viewState.queue.find((video: Video) => video.isPlaying);
+        if(!nowPlayingVideo) {
             return;
         }
 
-        fetch(`${process.env.NEXT_PUBLIC_SERVER_PATH || 'http://localhost:3000'}/api/cuevana?url=${video.origin}`)
+        if(JSON.stringify(currentVideo) == JSON.stringify(nowPlayingVideo)) {
+            return;
+        }
+
+        setCurrentVideo(nowPlayingVideo);
+
+    }, [group, setGroup])
+
+
+    // Update video source when current video changes
+    useEffect(() => {
+        let nowPlayingVideo: Video | undefined = group.viewState.queue.find((video: Video) => video.isPlaying);
+        if(!nowPlayingVideo) {
+            return;
+        }
+
+        fetch(`${process.env.NEXT_PUBLIC_SERVER_PATH || 'http://localhost:3000'}/api/cuevana?url=${nowPlayingVideo.origin}`)
             .then(res => res.json())
             .then(data => {
                 updateVideoSource(data.src);
-                setCurrentVideo(video);
             })
-    }, [group, setGroup])
+    }, [currentVideo, setCurrentVideo])
 
     // Socket connection
     useEffect(() => {
@@ -68,6 +83,12 @@ const Player: NextPage<Props> = (props): JSX.Element => {
         socket.on('userJoin', (newUser) => {
             // Show a popup
             console.log(newUser.nickname + " has joined to the group")
+
+            // Add user to the group
+            console.log('tt', group);
+            group.members.push(newUser);
+            console.log('ttt', group);
+            setGroup(group);
         })
 
         socket.on('disconnect', () => {
@@ -159,22 +180,19 @@ const Player: NextPage<Props> = (props): JSX.Element => {
     function updateVideoSource(source: string) {
         const video = document.getElementById('player') as HTMLVideoElement;
         video.src = source;
-        video.play().then(() => {
-            setGroup((prevState: Group) => {
-                let newGroup = {
-                    ...prevState,
-                    viewState: {
-                        ...prevState.viewState,
-                        time: video.currentTime,
-                        playing: true,
-                    }
-                } as Group;
+        setGroup((prevState: Group) => {
+            let newGroup = {
+                ...prevState,
+                viewState: {
+                    ...prevState.viewState,
+                    time: video.currentTime,
+                    playing: !video.paused,
+                }
+            } as Group;
 
-                socket.emit('groupUpdate', newGroup);
-                return newGroup;
-            })
+            socket.emit('groupUpdate', newGroup);
+            return newGroup;
         })
-        console.log(2, video)
     }
 
     function rewind() {
