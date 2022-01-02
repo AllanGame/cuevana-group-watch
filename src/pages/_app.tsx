@@ -22,7 +22,6 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { useState } from 'react'
 import { UserContext } from '../users/user.context'
-import {GroupContext} from "../groups/group.context";
 library.add(
     faArrowRight,
     faGripVertical,
@@ -43,15 +42,12 @@ library.add(
 
 function MyApp({ Component, pageProps }: AppProps) {
     const [user, setUser] = useState(null);
-    const [group, setGroup] = useState(null);
 
-  return (
-    <GroupContext.Provider value={{group, setGroup} as any}>
+    return (
         <UserContext.Provider value={{user, setUser} as any}>
             <Component {...pageProps} />
         </UserContext.Provider>
-    </GroupContext.Provider>
-  )
+    )
 }
 
 export default MyApp

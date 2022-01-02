@@ -7,10 +7,9 @@ import {SyntheticEvent, useCallback, useContext, useEffect, useState} from "reac
 import io, {Socket} from "socket.io-client";
 import {GroupContext} from "../../groups/group.context";
 import {DefaultEventsMap} from "@socket.io/component-emitter";
-import {LocalViewState, ViewState} from "../../common/types";
+import {LocalViewState} from "../../common/types";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import Video from "../../common/video";
-import { QueueContext } from "../../groups/queue.context";
 
 interface Props {
     group: Group
@@ -23,10 +22,27 @@ let socket: Socket<DefaultEventsMap, DefaultEventsMap>;
 // TODO: Move all functions to another file called player.interactions.tsx
 // TODO: Show tooltip with time when hovering the progress bar
 const Player: NextPage<Props> = (props): JSX.Element => {
-    const {group, setGroup} = useContext(GroupContext) as any;
+    const [group, setGroup] = useState<Group>(props.group);
 
     const [isQueueManagerVisible, setIsQueueManagerVisible] = useState(true);
     const [localViewState, setLocalViewState] = useState<LocalViewState>({fullscreen: false, volume: 100})
+    const [socketState, setSocketState] = useState<Socket<DefaultEventsMap, DefaultEventsMap>>(socket);
+    const [currentVideo, setCurrentVideo] = useState<Video | undefined>(undefined);
+
+    // Handle currentPlaying
+    useEffect(() => {
+        let video: Video | undefined = group.viewState.queue.find((video: Video) => video.isPlaying);
+        if(!video || video == currentVideo) {
+            return;
+        }
+
+        fetch(`${process.env.NEXT_PUBLIC_SERVER_PATH || 'http://localhost:3000'}/api/cuevana?url=${video.origin}`)
+            .then(res => res.json())
+            .then(data => {
+                updateVideoSource(data.src);
+                setCurrentVideo(video);
+            })
+    }, [group, setGroup])
 
     // Socket connection
     useEffect(() => {
@@ -58,6 +74,8 @@ const Player: NextPage<Props> = (props): JSX.Element => {
             // Show a pop up and emit the disconnection
             console.log('disconnect')
         })
+
+        setSocketState(socket);
     }, [])
 
     const handleKeyDown = useCallback((event) => {
@@ -92,7 +110,9 @@ const Player: NextPage<Props> = (props): JSX.Element => {
         <div className={styles.playerContainer} id="playerContainer">
             {/* QueueManager */}
             <div className={isQueueManagerVisible ? styles.queueManagerWrapper : styles.queueManagerWrapperInvisible}>
-                <QueueManager group={group} viewer={props.viewer} socket={socket}/>
+                <GroupContext.Provider value={{group, setGroup} as any}>
+                    <QueueManager group={group} viewer={props.viewer} socket={socketState}/>
+                </GroupContext.Provider>
             </div>
 
             {/*Video*/}
@@ -139,6 +159,22 @@ const Player: NextPage<Props> = (props): JSX.Element => {
     function updateVideoSource(source: string) {
         const video = document.getElementById('player') as HTMLVideoElement;
         video.src = source;
+        video.play().then(() => {
+            setGroup((prevState: Group) => {
+                let newGroup = {
+                    ...prevState,
+                    viewState: {
+                        ...prevState.viewState,
+                        time: video.currentTime,
+                        playing: true,
+                    }
+                } as Group;
+
+                socket.emit('groupUpdate', newGroup);
+                return newGroup;
+            })
+        })
+        console.log(2, video)
     }
 
     function rewind() {
@@ -156,6 +192,7 @@ const Player: NextPage<Props> = (props): JSX.Element => {
             } as Group;
 
             socket.emit('groupUpdate', newGroup);
+            return newGroup;
         })
     }
 
@@ -174,6 +211,7 @@ const Player: NextPage<Props> = (props): JSX.Element => {
             } as Group;
 
             socket.emit('groupUpdate', newGroup);
+            return newGroup;
         })
     }
 
@@ -193,6 +231,7 @@ const Player: NextPage<Props> = (props): JSX.Element => {
             } as Group;
 
             socket.emit('groupUpdate', newGroup);
+            return newGroup;
         })
     }
 
@@ -258,10 +297,9 @@ const Player: NextPage<Props> = (props): JSX.Element => {
             } as Group;
 
             socket.emit('groupUpdate', newGroup);
+            return newGroup;
         })
     }
-
-
 }
 
 export default Player;

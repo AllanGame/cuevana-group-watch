@@ -10,6 +10,7 @@ interface Props {
     addedBy: User;
 }
 
+// TODO: If the video is playing, it should be displayed different.
 const QueueItem: NextPage<Props> = (props): JSX.Element => {
     return (
         <div className={styles.itemContainer}>

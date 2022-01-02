@@ -25,7 +25,6 @@ export default async function handler(
             })
 
             socket.on('groupUpdate', (newGroup: Group) => {
-                console.log('Group Update received', newGroup);
                 socket.broadcast.to(newGroup.id).emit("groupUpdate", newGroup);
             })
         })

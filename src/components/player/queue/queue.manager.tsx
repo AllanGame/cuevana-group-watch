@@ -113,7 +113,7 @@ const QueueManager: NextPage<Props> = (props): JSX.Element => {
                         duration: "1h 2m",
                         addedBy: props.viewer,
                         origin: searchInput.value
-                    }, false)],
+                    }, group.viewState.queue.length < 1)],
                     searching: true,
                     searched: true
                 }

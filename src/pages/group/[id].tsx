@@ -7,17 +7,14 @@ import {UserContext} from "../../users/user.context";
 import {GroupContext} from "../../groups/group.context";
 
 const GroupPage: NextPage = (props: any) => {
-    const {group, setGroup} = useContext(GroupContext) as any;
     const {user} = useContext(UserContext) as any;
 
     useEffect(() => {
         if(props.group.error || !user || !user[0]) {
             return;
         }
-        fetch('/api/socketio').finally(() => {
-            setGroup(props.group.error ? null : props.group);
-        })
 
+        fetch('/api/socketio');
     }, [])
 
     if(props.group.error) {
@@ -36,23 +33,12 @@ const GroupPage: NextPage = (props: any) => {
             </div>
         )
     }
-    if(!group) {
-        return (
-            <div className={styles.notFound}>
-
-            </div>
-        )
-    }
 
     return (
         <div className={styles.container}>
-            <Player group={group} viewer={user[0]}/>
+            <Player group={props.group} viewer={user[0]}/>
             <div className={styles.debug}>
-                <p>origin: {group.currentVideo ? group.currentVideo.origin : 'n/p'}</p>
-                <p>your nickname: {user[0].nickname}</p>
-                <p>{group.currentVideo ? 'video-source' : 'no source'}</p>
-                <p>group-title: {group.title}</p>
-                <p>member-count: {JSON.stringify(group.members)}</p>
+                <p>DEBUG notfinished</p>
             </div>
         </div>
     )
