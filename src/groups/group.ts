@@ -14,6 +14,6 @@ export default class Group {
         this.title = title;
 
         // Initial view state
-        this.viewState = {time: 0, playing: false, groupId: id};
+        this.viewState = {time: 0, playing: false, groupId: id, queue: []};
     }
 }

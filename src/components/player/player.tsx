@@ -27,8 +27,12 @@ const Player: NextPage<Props> = (props): JSX.Element => {
     const [queue, setQueue] = useState([] as Video[]);
     const [isConnected, setIsConnected] = useState(false);
     const [isQueueManagerVisible, setIsQueueManagerVisible] = useState(true);
-    const [viewState, setViewState] = useState<ViewState>({time: 0, playing: false, groupId: group.id})
+    const [viewState, setViewState] = useState<ViewState>({time: 0, playing: false, groupId: group.id, queue: []})
     const [localViewState, setLocalViewState] = useState<LocalViewState>({fullscreen: false, volume: 100})
+
+    useEffect(() => {
+
+    }, [queue, setQueue])
 
     useEffect(() => {
         // Prevent multiple connections

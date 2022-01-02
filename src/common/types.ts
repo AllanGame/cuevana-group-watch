@@ -7,6 +7,7 @@ export type ViewState = {
     time: number;
     playing: boolean;
     groupId: string;
+    queue: Video[];
 }
 
 export type LocalViewState = {
