@@ -7,11 +7,10 @@ import {SyntheticEvent, useCallback, useContext, useEffect, useState} from "reac
 import io, {Socket} from "socket.io-client";
 import {GroupContext} from "../../groups/group.context";
 import {DefaultEventsMap} from "@socket.io/component-emitter";
-import {LocalViewState, VideoItemData, ViewState} from "../../common/types";
+import {LocalViewState, ViewState} from "../../common/types";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import Video from "../../common/video";
 import { QueueContext } from "../../groups/queue.context";
-import {update} from "cheerio/lib/parse";
 
 interface Props {
     group: Group
@@ -27,23 +26,19 @@ const Player: NextPage<Props> = (props): JSX.Element => {
     const {group, setGroup} = useContext(GroupContext) as any;
 
     // TODO: Modify Video class and make it store the itemData and if it is currentPlaying
-    const [queue, setQueue] = useState({
-        videos: [] as Video[],
-        // Used to display data like poster image in QueueManager
-        videosItemData: []  as VideoItemData[]
-    });
+    const [queue, setQueue] = useState([] as Video[]);
 
     useEffect(() => {
-        if(queue.videos.length > 0) {
-            let indexVideo = queue.videos[0];
-
-            fetch(
-                `${process.env.NEXT_PUBLIC_SERVER_PATH || 'http://localhost:3000'}/api/cuevana?url=${indexVideo.origin}`
-            ).then(res => res.json())
-                .then((data) => {
-                    updateVideoSource(data.src);
-                })
-        }
+        // if(queue.videos.length > 0) {
+        //     let indexVideo = queue.videos[0];
+        //
+        //     fetch(
+        //         `${process.env.NEXT_PUBLIC_SERVER_PATH || 'http://localhost:3000'}/api/cuevana?url=${indexVideo.origin}`
+        //     ).then(res => res.json())
+        //         .then((data) => {
+        //             updateVideoSource(data.src);
+        //         })
+        // }
     }, [queue, setQueue])
 
     const [isConnected, setIsConnected] = useState(false);

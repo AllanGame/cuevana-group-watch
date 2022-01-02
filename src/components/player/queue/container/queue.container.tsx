@@ -1,8 +1,9 @@
 import type {NextPage} from "next";
 import QueueItem from "../item/queue.item";
+import Video from "../../../../common/video";
 
 interface Props {
-    queueItems: object[]
+    queueItems: Video[]
     className: string;
 }
 
@@ -13,14 +14,14 @@ const QueueContainer: NextPage<Props> = (props): JSX.Element => {
     return (
         <div className={props.className}>
             {
-                props.queueItems.map((item: any, index) =>
+                props.queueItems.map((item: Video, index) =>
                     (
                         <QueueItem
                             key={`searchItem-${index}`}
-                            addedBy={item.addedBy}
-                            duration={item.duration}
-                            posterSrc={item.posterSrc}
-                            title={item.title}
+                            addedBy={item.itemData.addedBy}
+                            duration={item.itemData.duration}
+                            posterSrc={item.itemData.posterSrc}
+                            title={item.itemData.title}
                         />
                     ))
             }

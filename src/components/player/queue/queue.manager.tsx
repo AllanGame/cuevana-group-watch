@@ -13,6 +13,7 @@ import SearchContainer from "./container/search.container";
 import QueueContainer from "./container/queue.container";
 import {QueueManagerState} from "../../../common/types";
 import {QueueContext} from "../../../groups/queue.context";
+import Video from "../../../common/video";
 
 const URL_REGEX = new RegExp(
     /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
@@ -28,8 +29,8 @@ const QueueManager: NextPage<Props> = (props): JSX.Element => {
     const [queueManagerState, setQueueManagerState] = useState<QueueManagerState>({
         searching: false,
         searched: false,
-        searchItems: [],
-        queueItems: []
+        searchItems: [] as Video[],
+        queueItems: [] as Video[]
     });
 
     const {setQueue} = useContext(QueueContext) as any;
@@ -104,13 +105,13 @@ const QueueManager: NextPage<Props> = (props): JSX.Element => {
             setQueueManagerState((prevState) => {
                 return {
                     ...prevState,
-                    searchItems: [{
+                    searchItems: [new Video(searchInput.value, {
                         posterSrc: poster,
                         title,
                         duration: "1h 2m",
                         addedBy: props.viewer,
                         origin: searchInput.value
-                    }],
+                    })],
                     searching: true,
                     searched: true
                 }

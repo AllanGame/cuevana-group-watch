@@ -11,6 +11,8 @@ interface Props {
     create: boolean;
 }
 
+
+// TODO: this never adds the creator of the group to the group.
 const GroupAccess: NextPage<Props> = (props): JSX.Element => {
     const { setUser } = useContext(UserContext) as any;
     const { push } = useRouter()

@@ -1,4 +1,5 @@
 import User from "../users/user";
+import Video from "./video";
 
 // TODO: Start with isSomething boolean names
 
@@ -25,6 +26,6 @@ export type VideoItemData = {
 export type QueueManagerState = {
     searching: boolean;
     searched: boolean;
-    searchItems: VideoItemData[];
-    queueItems: VideoItemData[];
+    searchItems: Video[];
+    queueItems: Video[];
 }
