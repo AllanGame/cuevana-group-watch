@@ -11,12 +11,13 @@ import {VideoItemData} from "./types";
  * of an origin.
  */
 export default class Video {
-    // TODO: add isPlaying property
     origin: string;
     itemData: VideoItemData;
+    isPlaying: boolean;
 
-    constructor(origin: string, itemData: VideoItemData) {
+    constructor(origin: string, itemData: VideoItemData, isPlaying: boolean) {
         this.origin = origin;
         this.itemData = itemData;
+        this.isPlaying = isPlaying;
     }
 }
