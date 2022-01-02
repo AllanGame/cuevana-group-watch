@@ -6,6 +6,7 @@ export default class Group {
     id: string;
     title: string;
     members: User[] = []
+    // TODO: remove queue property, use viewState.queue
     queue: Video[] = [];
     viewState: ViewState;
 

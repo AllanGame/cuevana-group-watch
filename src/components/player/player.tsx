@@ -24,54 +24,44 @@ let socket: Socket<DefaultEventsMap, DefaultEventsMap>;
 // TODO: Show tooltip with time when hovering the progress bar
 const Player: NextPage<Props> = (props): JSX.Element => {
     const {group, setGroup} = useContext(GroupContext) as any;
-    const [queue, setQueue] = useState([] as Video[]);
-    const [isConnected, setIsConnected] = useState(false);
+
     const [isQueueManagerVisible, setIsQueueManagerVisible] = useState(true);
-    const [viewState, setViewState] = useState<ViewState>({time: 0, playing: false, groupId: group.id, queue: []})
     const [localViewState, setLocalViewState] = useState<LocalViewState>({fullscreen: false, volume: 100})
 
     useEffect(() => {
+        console.log(group);
+    }, [group, setGroup])
 
-    }, [queue, setQueue])
-
+    // Socket connection
     useEffect(() => {
-        // Prevent multiple connections
-        if(!isConnected) {
-            socket = io()
-            socket.on('connect', () => {
-                setIsConnected(true);
-                socket.emit('joinRoom', {
-                    group: props.group,
-                    user: props.viewer
-                })
-            });
-
-            socket.on('roomUpdate', (newGroup) => {
-                setGroup(newGroup);
+        socket = io()
+        socket.on('connect', () => {
+            socket.emit('joinRoom', {
+                group: props.group,
+                user: props.viewer
             })
+        });
 
-            socket.on('viewUpdate', (newViewState: ViewState) => {
-                console.log(newViewState);
-                // if(newViewState.user.nickname === props.viewer.nickname) {
-                //     return;
-                // }
+        socket.on('groupUpdate', (newGroup: Group) => {
+            // Update group
+            setGroup(newGroup);
 
-                console.log(newViewState);
-                let video = document.getElementById('player') as HTMLVideoElement;
-                video.currentTime = newViewState.time;
-                newViewState.playing ? video.play() : video.pause();
-                setViewState(newViewState);
-            })
+            // Update view state
+            let newViewState = newGroup.viewState;
+            let video = document.getElementById('player') as HTMLVideoElement;
+            video.currentTime = newViewState.time;
+            newViewState.playing ? video.play() : video.pause();
+        })
 
-            socket.on('userJoin', (newUser) => {
-                console.log(newUser.nickname + " has joined to the group")
-            })
+        socket.on('userJoin', (newUser) => {
+            // Show a popup
+            console.log(newUser.nickname + " has joined to the group")
+        })
 
-            socket.on('disconnect', () => {
-                // Emit roomDisconect
-                console.log('disconnect')
-            })
-        }
+        socket.on('disconnect', () => {
+            // Show a pop up and emit the disconnection
+            console.log('disconnect')
+        })
     }, [])
 
     const handleKeyDown = useCallback((event) => {
@@ -106,9 +96,7 @@ const Player: NextPage<Props> = (props): JSX.Element => {
         <div className={styles.playerContainer} id="playerContainer">
             {/* QueueManager */}
             <div className={isQueueManagerVisible ? styles.queueManagerWrapper : styles.queueManagerWrapperInvisible}>
-                <QueueContext.Provider value={{queue, setQueue} as any}>
-                    <QueueManager group={props.group} viewer={props.viewer} socket={socket}/>
-                </QueueContext.Provider>
+                <QueueManager group={group} viewer={props.viewer} socket={socket}/>
             </div>
 
             {/*Video*/}
@@ -130,7 +118,7 @@ const Player: NextPage<Props> = (props): JSX.Element => {
                     <div className={styles.controls}>
                         <div className={styles.options}>
                             <div className={styles.leftOptions}>
-                                <FontAwesomeIcon className={styles.option} icon={viewState.playing ? 'pause' : 'play'} onClick={togglePlay}/>
+                                <FontAwesomeIcon className={styles.option} icon={group.viewState.playing ? 'pause' : 'play'} onClick={togglePlay}/>
                                 <FontAwesomeIcon className={styles.option} icon="undo" onClick={rewind}/>
                                 <FontAwesomeIcon className={styles.option} icon="volume-up" onClick={togglePlay}/>
                                 {/*Toggle QueueManager Visible*/}
@@ -151,6 +139,7 @@ const Player: NextPage<Props> = (props): JSX.Element => {
     )
 
     // Interactions
+
     function updateVideoSource(source: string) {
         const video = document.getElementById('player') as HTMLVideoElement;
         video.src = source;
@@ -159,17 +148,56 @@ const Player: NextPage<Props> = (props): JSX.Element => {
     function rewind() {
         const video = document.getElementById('player') as HTMLVideoElement;
         video.currentTime = video.currentTime - 5;
+
+        setGroup((prevState: Group) => {
+            let newGroup = {
+                ...prevState,
+                viewState: {
+                    ...prevState.viewState,
+                    time: video.currentTime,
+                    playing: !video.paused,
+                }
+            } as Group;
+
+            socket.emit('groupUpdate', newGroup);
+        })
     }
 
     function jump() {
         const video = document.getElementById('player') as HTMLVideoElement;
         video.currentTime = video.currentTime + 5;
+
+        setGroup((prevState: Group) => {
+            let newGroup = {
+                ...prevState,
+                viewState: {
+                    ...prevState.viewState,
+                    time: video.currentTime,
+                    playing: !video.paused,
+                }
+            } as Group;
+
+            socket.emit('groupUpdate', newGroup);
+        })
     }
 
     function handleProgressBarClick(event: any) {
         const video = document.getElementById('player') as HTMLVideoElement;
         const progress = document.getElementById('videoProgress') as any;
         video.currentTime = (event.nativeEvent.offsetX / progress.offsetWidth) * video.duration;
+
+        setGroup((prevState: Group) => {
+            let newGroup = {
+                ...prevState,
+                viewState: {
+                    ...prevState.viewState,
+                    time: video.currentTime,
+                    playing: !video.paused,
+                }
+            } as Group;
+
+            socket.emit('groupUpdate', newGroup);
+        })
     }
 
     function handleTimeUpdate(event: SyntheticEvent<HTMLVideoElement, Event>) {
@@ -221,24 +249,22 @@ const Player: NextPage<Props> = (props): JSX.Element => {
 
     function togglePlay() {
         let video = document.getElementById('player') as HTMLVideoElement;
-        viewState.playing ? video.pause() : video.play();
-        setViewState(prevState => {
-            let newViewState = {
+        group.viewState.playing ? video.pause() : video.play();
+
+        setGroup((prevState: Group) => {
+            let newGroup = {
                 ...prevState,
-                time: video.currentTime,
-                playing: !video.paused,
-                user: props.viewer
-            } as ViewState;
+                viewState: {
+                    ...prevState.viewState,
+                    time: video.currentTime,
+                    playing: !video.paused,
+                }
+            } as Group;
 
-            defaultEmit(newViewState);
-            return newViewState;
-        });
+            socket.emit('groupUpdate', newGroup);
+        })
     }
 
-    function defaultEmit(viewState: ViewState) {
-        socket.emit('viewUpdate', viewState);
-
-    }
 
 }
 

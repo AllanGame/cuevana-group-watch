@@ -14,6 +14,7 @@ import QueueContainer from "./container/queue.container";
 import {QueueManagerState} from "../../../common/types";
 import {QueueContext} from "../../../groups/queue.context";
 import Video from "../../../common/video";
+import {GroupContext} from "../../../groups/group.context";
 
 const URL_REGEX = new RegExp(
     /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
@@ -33,7 +34,7 @@ const QueueManager: NextPage<Props> = (props): JSX.Element => {
         queueItems: [] as Video[]
     });
 
-    const {queue, setQueue} = useContext(QueueContext) as any;
+    const {group, setGroup} = useContext(GroupContext) as any;
 
     return (
         <div className={styles.queueManagerContainer}>
@@ -47,12 +48,13 @@ const QueueManager: NextPage<Props> = (props): JSX.Element => {
                     searchItems={queueManagerState.searchItems}
                     searched={queueManagerState.searched}
                     queueManagerStateModifier={setQueueManagerState}
-                    queueStateModifier={setQueue}
+                    groupStateModifier={setGroup}
+                    socket={props.socket}
                 />
                 :
                 <QueueContainer
                     className={styles.queueContainer}
-                    queueItems={queue}
+                    queueItems={group.viewState.queue}
                 />
             }
         </div>

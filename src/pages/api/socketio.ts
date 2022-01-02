@@ -1,5 +1,6 @@
 import {NextApiRequest, NextApiResponse} from "next";
 import { Server } from 'socket.io'
+import Group from "../../groups/group";
 
 export default async function handler(
     req: NextApiRequest,
@@ -15,12 +16,17 @@ export default async function handler(
             socket.on('joinRoom', ({group, user}) => {
                 console.log(`${user.nickname} has joined to ${group.id} room`)
                 socket.join(group.id)
-                socket.broadcast.to(group.id).emit('roomUpdate', group);
+                socket.broadcast.to(group.id).emit('groupUpdate', group);
                 socket.broadcast.to(group.id).emit('userJoin', user);
             })
 
             socket.on('viewUpdate', (viewState) => {
                 socket.broadcast.to(viewState.groupId).emit('viewUpdate', viewState);
+            })
+
+            socket.on('groupUpdate', (newGroup: Group) => {
+                console.log('Group Update received', newGroup);
+                socket.broadcast.to(newGroup.id).emit("groupUpdate", newGroup);
             })
         })
 

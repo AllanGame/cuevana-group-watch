@@ -1,15 +1,19 @@
 import type {NextPage} from "next";
 import SearchItem from "../item/search.item";
-import {QueueManagerState, VideoItemData} from "../../../../common/types";
-import {Dispatch, SetStateAction, useContext} from "react";
+import {QueueManagerState} from "../../../../common/types";
+import {Dispatch, SetStateAction} from "react";
 import Video from "../../../../common/video";
+import Group from "../../../../groups/group";
+import {Socket} from "socket.io-client";
+import {DefaultEventsMap} from "@socket.io/component-emitter";
 
 interface Props {
     searched: boolean;
     searchItems: Video[];
     queueManagerStateModifier: Dispatch<SetStateAction<QueueManagerState>>;
-    queueStateModifier: Dispatch<SetStateAction<Video[]>>;
+    groupStateModifier: Dispatch<SetStateAction<Group>>;
     className: string;
+    socket: Socket<DefaultEventsMap, DefaultEventsMap>;
 }
 
 /**
@@ -27,10 +31,26 @@ const SearchContainer: NextPage<Props> = (props): JSX.Element => {
                             posterSrc={item.itemData.posterSrc}
                             title={item.itemData.title}
                             onAdd={() => {
+                                // Clear search input
                                 const searchInput = document
                                     .getElementById('searchInput') as HTMLInputElement;
                                 searchInput.value = '';
-                                props.queueStateModifier((prevState) => prevState.concat([item]))
+
+                                // Add video to the group's queue
+                                props.groupStateModifier((prevState) => {
+                                    let newGroup = {
+                                        ...prevState,
+                                        viewState: {
+                                            ...prevState.viewState,
+                                            queue: prevState.viewState.queue.concat([item])
+                                        }
+                                    }
+
+                                    props.socket.emit('groupUpdate', newGroup);
+                                    return newGroup;
+                                })
+
+                                // Stop searching view
                                 props.queueManagerStateModifier(prevState => {
                                     return {
                                         ...prevState,
