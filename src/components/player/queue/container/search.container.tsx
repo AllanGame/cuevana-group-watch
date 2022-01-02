@@ -8,7 +8,7 @@ interface Props {
     searched: boolean;
     searchItems: Video[];
     queueManagerStateModifier: Dispatch<SetStateAction<QueueManagerState>>;
-    queueStateModifier: Dispatch<SetStateAction<any>>;
+    queueStateModifier: Dispatch<SetStateAction<Video[]>>;
     className: string;
 }
 
@@ -27,7 +27,17 @@ const SearchContainer: NextPage<Props> = (props): JSX.Element => {
                             posterSrc={item.itemData.posterSrc}
                             title={item.itemData.title}
                             onAdd={() => {
-                                // Add function
+                                const searchInput = document
+                                    .getElementById('searchInput') as HTMLInputElement;
+                                searchInput.value = '';
+                                props.queueStateModifier((prevState) => prevState.concat([item]))
+                                props.queueManagerStateModifier(prevState => {
+                                    return {
+                                        ...prevState,
+                                        searching: false,
+                                        searched: false,
+                                    }
+                                })
                             }}
                         />
                     ))

@@ -11,6 +11,7 @@ import {VideoItemData} from "./types";
  * of an origin.
  */
 export default class Video {
+    // TODO: add isPlaying property
     origin: string;
     itemData: VideoItemData;
 

@@ -24,35 +24,11 @@ let socket: Socket<DefaultEventsMap, DefaultEventsMap>;
 // TODO: Show tooltip with time when hovering the progress bar
 const Player: NextPage<Props> = (props): JSX.Element => {
     const {group, setGroup} = useContext(GroupContext) as any;
-
-    // TODO: Modify Video class and make it store the itemData and if it is currentPlaying
     const [queue, setQueue] = useState([] as Video[]);
-
-    useEffect(() => {
-        // if(queue.videos.length > 0) {
-        //     let indexVideo = queue.videos[0];
-        //
-        //     fetch(
-        //         `${process.env.NEXT_PUBLIC_SERVER_PATH || 'http://localhost:3000'}/api/cuevana?url=${indexVideo.origin}`
-        //     ).then(res => res.json())
-        //         .then((data) => {
-        //             updateVideoSource(data.src);
-        //         })
-        // }
-    }, [queue, setQueue])
-
     const [isConnected, setIsConnected] = useState(false);
     const [isQueueManagerVisible, setIsQueueManagerVisible] = useState(true);
-    const [viewState, setViewState] = useState<ViewState>({
-        time: 0,
-        playing: false,
-        groupId: group.id
-    })
-
-    const [localViewState, setLocalViewState] = useState<LocalViewState>({
-        fullscreen: false,
-        volume: 100
-    })
+    const [viewState, setViewState] = useState<ViewState>({time: 0, playing: false, groupId: group.id})
+    const [localViewState, setLocalViewState] = useState<LocalViewState>({fullscreen: false, volume: 100})
 
     useEffect(() => {
         // Prevent multiple connections
@@ -114,7 +90,6 @@ const Player: NextPage<Props> = (props): JSX.Element => {
         //  See https://support.google.com/youtube/answer/7631406?hl=en
 
     }, []);
-
     useEffect(() => {
         document.addEventListener("keydown", handleKeyDown, false);
 
@@ -165,14 +140,13 @@ const Player: NextPage<Props> = (props): JSX.Element => {
                                 <FontAwesomeIcon className={styles.option} icon={localViewState.fullscreen ? 'expand' : 'compress'} onClick={toggleFullscreen}/>
                             </div>
                         </div>
-
                     </div>
                 </div>
-
             </div>
         </div>
     )
 
+    // Interactions
     function updateVideoSource(source: string) {
         const video = document.getElementById('player') as HTMLVideoElement;
         video.src = source;

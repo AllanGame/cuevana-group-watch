@@ -33,7 +33,7 @@ const QueueManager: NextPage<Props> = (props): JSX.Element => {
         queueItems: [] as Video[]
     });
 
-    const {setQueue} = useContext(QueueContext) as any;
+    const {queue, setQueue} = useContext(QueueContext) as any;
 
     return (
         <div className={styles.queueManagerContainer}>
@@ -52,7 +52,7 @@ const QueueManager: NextPage<Props> = (props): JSX.Element => {
                 :
                 <QueueContainer
                     className={styles.queueContainer}
-                    queueItems={queueManagerState.queueItems}
+                    queueItems={queue}
                 />
             }
         </div>
