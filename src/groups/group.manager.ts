@@ -4,8 +4,15 @@ import Group from "./group";
 export class GroupManager {
     groups: Map<string, Group> = new Map();
 
-    createGroup(groupTitle: string): Group {
+    /**
+     * Creates a new group and adds it to the groups map
+     *
+     * @param groupTitle The title of the group
+     * @param creator Who created this group, this adds that person to the group
+     */
+    createGroup(groupTitle: string, creator: User): Group {
         let group = new Group(this.generateId(), groupTitle);
+        group.members.push(creator);
         this.groups.set(group.id, group);
         return group;
     }

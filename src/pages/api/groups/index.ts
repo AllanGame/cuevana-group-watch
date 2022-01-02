@@ -12,13 +12,13 @@ export default function handler(
   res: NextApiResponse<Data>
 ) {
     let groupManager = createGroupManager();
-    const { method, body: {nickname, title} } = req;
+    const { method, body: {creator, title} } = req;
 
     switch(method) {
         case "GET":
             return res.status(200).json(Array.from(groupManager.groups.values()));
         case "POST":
-            let createdGroup = groupManager.createGroup(title);
+            let createdGroup = groupManager.createGroup(title, creator);
             return res.status(200).json(createdGroup);
         default:
             return res.status(200).json([])

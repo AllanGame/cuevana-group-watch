@@ -28,10 +28,6 @@ const Player: NextPage<Props> = (props): JSX.Element => {
     const [isQueueManagerVisible, setIsQueueManagerVisible] = useState(true);
     const [localViewState, setLocalViewState] = useState<LocalViewState>({fullscreen: false, volume: 100})
 
-    useEffect(() => {
-        console.log(group);
-    }, [group, setGroup])
-
     // Socket connection
     useEffect(() => {
         socket = io()

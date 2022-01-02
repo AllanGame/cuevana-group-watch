@@ -30,7 +30,9 @@ const GroupAccess: NextPage<Props> = (props): JSX.Element => {
             alert('Nickname and group title are required.')
             return;
         }
-        
+
+        const user = new User(nicknameInput.value);
+
         try {
             await fetch(`${process.env.NEXT_PUBLIC_SERVER_PATH || 'http://localhost:3000'}/api/groups`, {
               method: "POST",
@@ -38,12 +40,14 @@ const GroupAccess: NextPage<Props> = (props): JSX.Element => {
                 "Content-Type": "application/json",
               },
               body: JSON.stringify({
-                  title: groupTitleInput.value
+                  title: groupTitleInput.value,
+                  // Adds the user to the group
+                  creator: user
               }),
             }).then(response => {
               return response.json()
             }).then(data => {
-                setUser([{currentTime: 0, paused: false, nickname: nicknameInput.value}])
+                setUser([user])
               push('/group/'+data.id)
             })
           } catch (error) {
