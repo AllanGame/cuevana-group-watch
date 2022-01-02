@@ -36,7 +36,6 @@ const GroupAccess: NextPage<Props> = (props): JSX.Element => {
                 "Content-Type": "application/json",
               },
               body: JSON.stringify({
-                  nickname:  nicknameInput.value,
                   title: groupTitleInput.value
               }),
             }).then(response => {

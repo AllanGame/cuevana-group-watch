@@ -1,10 +1,11 @@
 import User from "../users/user";
 
+// TODO: Start with isSomething boolean names
+
 export type ViewState = {
     time: number;
     playing: boolean;
     groupId: string;
-    user: User;
 }
 
 export type LocalViewState = {
@@ -17,6 +18,7 @@ export type VideoItemData = {
     duration: string;
     posterSrc: string;
     title: string;
+    origin: string;
 }
 
 

@@ -1,20 +1,19 @@
 import Video from "../common/video";
 import User from "../users/user";
+import {ViewState} from "../common/types";
 
 export default class Group {
     id: string;
     title: string;
     members: User[] = []
-    reference: User;
     queue: Video[] = [];
-    currentVideo: Video | null = null;
-    currentTime: number = 0;
-    playing: boolean = false;
+    viewState: ViewState;
 
-    constructor(id: string, title: string, reference: User) {
+    constructor(id: string, title: string) {
         this.id = id;
         this.title = title;
-        this.reference = reference;
-        this.members.push(reference);
+
+        // Initial view state
+        this.viewState = {time: 0, playing: false, groupId: id};
     }
 }

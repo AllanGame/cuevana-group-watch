@@ -7,11 +7,12 @@ import {Socket} from "socket.io-client";
 import {DefaultEventsMap} from "@socket.io/component-emitter";
 import {NextPage} from "next";
 import axios from "axios";
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import SearchItem from "./item/search.item";
 import SearchContainer from "./container/search.container";
 import QueueContainer from "./container/queue.container";
 import {QueueManagerState} from "../../../common/types";
+import {QueueContext} from "../../../groups/queue.context";
 
 const URL_REGEX = new RegExp(
     /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
@@ -24,13 +25,14 @@ interface Props {
 }
 
 const QueueManager: NextPage<Props> = (props): JSX.Element => {
-
     const [queueManagerState, setQueueManagerState] = useState<QueueManagerState>({
         searching: false,
         searched: false,
         searchItems: [],
         queueItems: []
     });
+
+    const {setQueue} = useContext(QueueContext) as any;
 
     return (
         <div className={styles.queueManagerContainer}>
@@ -43,7 +45,8 @@ const QueueManager: NextPage<Props> = (props): JSX.Element => {
                     className={styles.queueContainer}
                     searchItems={queueManagerState.searchItems}
                     searched={queueManagerState.searched}
-                    stateModifier={setQueueManagerState}
+                    queueManagerStateModifier={setQueueManagerState}
+                    queueStateModifier={setQueue}
                 />
                 :
                 <QueueContainer
@@ -94,7 +97,7 @@ const QueueManager: NextPage<Props> = (props): JSX.Element => {
         try {
             let originRequestResponse = await axios({
                 method: 'GET',
-                url: `${process.env.NEXT_PUBLIC_SERVER_PATH || 'http://localhost:3000'}/api/moviedata?url=`+searchInput.value
+                url: `${process.env.NEXT_PUBLIC_SERVER_PATH || 'http://localhost:3000'}/api/moviedata?url=${searchInput.value}`
             })
 
             let {title, poster} = originRequestResponse.data;
@@ -105,7 +108,8 @@ const QueueManager: NextPage<Props> = (props): JSX.Element => {
                         posterSrc: poster,
                         title,
                         duration: "1h 2m",
-                        addedBy: props.viewer
+                        addedBy: props.viewer,
+                        origin: searchInput.value
                     }],
                     searching: true,
                     searched: true

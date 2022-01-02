@@ -1,12 +1,15 @@
 import type {NextPage} from "next";
 import SearchItem from "../item/search.item";
 import {QueueManagerState, VideoItemData} from "../../../../common/types";
-import {Dispatch, SetStateAction} from "react";
+import {Dispatch, SetStateAction, useContext} from "react";
+import {QueueContext} from "../../../../groups/queue.context";
+import Video from "../../../../common/video";
 
 interface Props {
     searched: boolean;
     searchItems: VideoItemData[];
-    stateModifier: Dispatch<SetStateAction<QueueManagerState>>;
+    queueManagerStateModifier: Dispatch<SetStateAction<QueueManagerState>>;
+    queueStateModifier: Dispatch<SetStateAction<any>>;
     className: string;
 }
 
@@ -25,7 +28,12 @@ const SearchContainer: NextPage<Props> = (props): JSX.Element => {
                             posterSrc={item.posterSrc}
                             title={item.title}
                             onAdd={() => {
-                                props.stateModifier((queueManagerState) => {
+
+                                // Clean search input because user isn't searching anymore
+                                let searchInput = document.getElementById('searchInput') as any;
+                                searchInput.value = '';
+
+                                props.queueManagerStateModifier((queueManagerState) => {
                                     return {
                                         ...queueManagerState,
                                         searching: false,
@@ -35,10 +43,24 @@ const SearchContainer: NextPage<Props> = (props): JSX.Element => {
                                             addedBy: item.addedBy,
                                             duration: item.duration,
                                             posterSrc: item.posterSrc,
-                                            title: item.title
+                                            title: item.title,
+                                            origin: item.origin
                                         }])
                                     }
                                 })
+                                props.queueStateModifier((queueState: any) => {
+                                    return {
+                                        videos: queueState.videos.concat([new Video(item.addedBy, item.origin)]),
+                                        videosItemData: queueState.videos.concat([{
+                                            addedBy: item.addedBy,
+                                            duration: item.duration,
+                                            posterSrc: item.posterSrc,
+                                            title: item.title,
+                                            origin: item.origin
+                                        }])
+                                    }
+                                })
+
                             }}
                         />
                     ))

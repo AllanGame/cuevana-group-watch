@@ -18,7 +18,7 @@ export default function handler(
         case "GET":
             return res.status(200).json(Array.from(groupManager.groups.values()));
         case "POST":
-            let createdGroup = groupManager.createGroup(title, new User(nickname));
+            let createdGroup = groupManager.createGroup(title);
             return res.status(200).json(createdGroup);
         default:
             return res.status(200).json([])

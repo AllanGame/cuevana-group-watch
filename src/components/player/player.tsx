@@ -7,8 +7,11 @@ import {SyntheticEvent, useCallback, useContext, useEffect, useState} from "reac
 import io, {Socket} from "socket.io-client";
 import {GroupContext} from "../../groups/group.context";
 import {DefaultEventsMap} from "@socket.io/component-emitter";
-import {LocalViewState, ViewState} from "../../common/types";
+import {LocalViewState, VideoItemData, ViewState} from "../../common/types";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import Video from "../../common/video";
+import { QueueContext } from "../../groups/queue.context";
+import {update} from "cheerio/lib/parse";
 
 interface Props {
     group: Group
@@ -22,13 +25,33 @@ let socket: Socket<DefaultEventsMap, DefaultEventsMap>;
 // TODO: Show tooltip with time when hovering the progress bar
 const Player: NextPage<Props> = (props): JSX.Element => {
     const {group, setGroup} = useContext(GroupContext) as any;
+
+    // TODO: Modify Video class and make it store the itemData and if it is currentPlaying
+    const [queue, setQueue] = useState({
+        videos: [] as Video[],
+        // Used to display data like poster image in QueueManager
+        videosItemData: []  as VideoItemData[]
+    });
+
+    useEffect(() => {
+        if(queue.videos.length > 0) {
+            let indexVideo = queue.videos[0];
+
+            fetch(
+                `${process.env.NEXT_PUBLIC_SERVER_PATH || 'http://localhost:3000'}/api/cuevana?url=${indexVideo.origin}`
+            ).then(res => res.json())
+                .then((data) => {
+                    updateVideoSource(data.src);
+                })
+        }
+    }, [queue, setQueue])
+
     const [isConnected, setIsConnected] = useState(false);
     const [isQueueManagerVisible, setIsQueueManagerVisible] = useState(true);
     const [viewState, setViewState] = useState<ViewState>({
         time: 0,
         playing: false,
-        groupId: group.id,
-        user: props.viewer
+        groupId: group.id
     })
 
     const [localViewState, setLocalViewState] = useState<LocalViewState>({
@@ -54,9 +77,9 @@ const Player: NextPage<Props> = (props): JSX.Element => {
 
             socket.on('viewUpdate', (newViewState: ViewState) => {
                 console.log(newViewState);
-                if(newViewState.user.nickname === props.viewer.nickname) {
-                    return;
-                }
+                // if(newViewState.user.nickname === props.viewer.nickname) {
+                //     return;
+                // }
 
                 console.log(newViewState);
                 let video = document.getElementById('player') as HTMLVideoElement;
@@ -109,7 +132,9 @@ const Player: NextPage<Props> = (props): JSX.Element => {
         <div className={styles.playerContainer} id="playerContainer">
             {/* QueueManager */}
             <div className={isQueueManagerVisible ? styles.queueManagerWrapper : styles.queueManagerWrapperInvisible}>
-                <QueueManager group={props.group} viewer={props.viewer} socket={socket}/>
+                <QueueContext.Provider value={{queue, setQueue} as any}>
+                    <QueueManager group={props.group} viewer={props.viewer} socket={socket}/>
+                </QueueContext.Provider>
             </div>
 
             {/*Video*/}
@@ -117,7 +142,6 @@ const Player: NextPage<Props> = (props): JSX.Element => {
                 <video
                     id="player"
                     className={styles.video}
-                    src="https://media.vimejs.com/720p.mp4"
                     onTimeUpdate={handleTimeUpdate}
                     onClick={togglePlay}
                 />
@@ -153,6 +177,11 @@ const Player: NextPage<Props> = (props): JSX.Element => {
             </div>
         </div>
     )
+
+    function updateVideoSource(source: string) {
+        const video = document.getElementById('player') as HTMLVideoElement;
+        video.src = source;
+    }
 
     function rewind() {
         const video = document.getElementById('player') as HTMLVideoElement;

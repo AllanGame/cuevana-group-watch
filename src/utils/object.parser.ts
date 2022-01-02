@@ -1,16 +1,14 @@
 import Video from "../common/video";
 import Group from "../groups/group";
 import User from "../users/user";
+import {ViewState} from "../common/types";
 
 interface jsonGroupObject {
     id: string;
     title: string;
     members: User[];
-    reference: User;
     queue: Video[];
-    currentVideo: Video | null;
-    currentTime: number; 
-    playing: boolean;
+    viewState: ViewState;
 }
 
 /**
@@ -20,16 +18,13 @@ interface jsonGroupObject {
  * @param group The {@link Group} object to convert
  * @returns The converted {@link jsonGroupObject} object
  */
-function toJSON({id, title, members, reference, queue, currentVideo, currentTime, playing}: Group): jsonGroupObject {
+function toJSON({id, title, members, queue, viewState}: Group): jsonGroupObject {
     return {
         id,
         title, 
         members,
-        reference,
         queue,
-        currentTime,
-        currentVideo,
-        playing
+        viewState
     }
 }
 
@@ -39,13 +34,11 @@ function toJSON({id, title, members, reference, queue, currentVideo, currentTime
  * @param object the Json Object 
  * @returns The converted {@link Group} object
  */
-function toGroup({id, title, members, reference, queue, currentVideo, currentTime, playing}: jsonGroupObject): Group {
-    let newGroup = new Group(id, title, reference);
+function toGroup({id, title, members, queue, viewState}: jsonGroupObject): Group {
+    let newGroup = new Group(id, title);
     newGroup.members = members;
     newGroup.queue = queue;
-    newGroup.currentTime = currentTime;
-    newGroup.currentVideo = currentVideo;
-    newGroup.playing = playing;
+    newGroup.viewState = viewState;
     return newGroup;
 }
 
