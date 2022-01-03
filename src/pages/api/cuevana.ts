@@ -43,7 +43,7 @@ export default async function handler(
 
         const tomatometelaAnonymizerResponse = await axios({
           method: "get",
-          url: nextUrl
+          url: 'https:'+nextUrl
         });
 
         const tomatometelaAnonymizer = cheerio.load(
