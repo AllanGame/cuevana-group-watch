@@ -39,6 +39,7 @@ export default async function handler(
         const browser = await puppeteer.launch();
         const page = await browser.newPage();
         await page.goto(videoUrl)
+        await page.waitForFunction('document.querySelector("div#OptL1 > iframe.no-you").getAttribute("src")');
         let nextUrl = await page.evaluate('document.querySelector("div#OptL1 > iframe.no-you").getAttribute("src")')
 
         const tomatometelaAnonymizerResponse = await axios({

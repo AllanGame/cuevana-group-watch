@@ -27,6 +27,7 @@ export default async function handler(
         const browser = await puppeteer.launch();
         const page = await browser.newPage();
         await page.goto(videoUrl as string)
+        await page.waitForFunction('document.querySelector("div#OptL1 > iframe.no-you").getAttribute("src")');
         return res.status(200).json({
           res: await page.evaluate('document.querySelector("div#OptL1 > iframe.no-you").getAttribute("src")')
         })
