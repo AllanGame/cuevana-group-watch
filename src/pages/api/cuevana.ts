@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import cheerio from "cheerio";
 import axios from "axios";
 import FormData from "form-data";
+import puppeteer from "puppeteer";
 
 type Data = {};
 
@@ -15,7 +16,7 @@ export default async function handler(
   switch (req.method) {
     // TODO: this code is shit
     case "GET":
-      const videoUrl = req.query.url;
+      const videoUrl = req.query.url as string;
 
       if (!videoUrl) {
         res.status(400).json({ error: "invalid url" });
@@ -23,17 +24,28 @@ export default async function handler(
       }
 
       try {
-        const cuevanaClientResponse = await axios({
-          method: "get",
-          url: videoUrl,
-        } as any);
-        const cuevanaClient = cheerio.load(cuevanaClientResponse.data);
+        // const cuevanaClientResponse = await axios({
+        //   method: "get",
+        //   url: videoUrl,
+        // } as any);
+        // const cuevanaClient = cheerio.load(cuevanaClientResponse.data);
+        //
+        // const tomatometelaAnonymizerResponse = await axios({
+        //   method: "get",
+        //   url:
+        //     "https:" + cuevanaClient("div#OptL1 > iframe.no-you").attr("data-src"),
+        // });
+
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage();
+        await page.goto(videoUrl)
+        let nextUrl = await page.evaluate('document.querySelector("div#OptL1 > iframe.no-you").getAttribute("src")')
 
         const tomatometelaAnonymizerResponse = await axios({
           method: "get",
-          url:
-            "https:" + cuevanaClient("div#OptL1 > iframe.no-you").attr("data-src"),
+          url: nextUrl
         });
+
         const tomatometelaAnonymizer = cheerio.load(
           tomatometelaAnonymizerResponse.data
         );
