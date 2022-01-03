@@ -6,6 +6,7 @@
     "build": "next build",
     "prestart": "npm run build",
     "start": "next start -p $PORT",
+    "postdeploy": "npm start",
     "lint": "next lint"
   },
   "dependencies": {
