@@ -4,9 +4,7 @@ import styles from '../../styles/components/Player.module.css'
 import User from "../../users/user";
 import QueueManager from "./queue/queue.manager";
 import {SyntheticEvent, useCallback, useContext, useEffect, useState} from "react";
-import io, {Socket} from "socket.io-client";
 import {GroupContext, IGroupContext} from "../../groups/group.context";
-import {DefaultEventsMap} from "@socket.io/component-emitter";
 import {LocalViewConfig} from "../../common/types";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import Video from "../../common/video";

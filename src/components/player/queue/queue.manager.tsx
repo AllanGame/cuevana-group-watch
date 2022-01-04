@@ -2,8 +2,6 @@ import styles from '../../../styles/components/QueueManager.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Group from "../../../groups/group";
 import User from "../../../users/user";
-import {Socket} from "socket.io-client";
-import {DefaultEventsMap} from "@socket.io/component-emitter";
 import {NextPage} from "next";
 import axios from "axios";
 import {useContext, useState} from "react";

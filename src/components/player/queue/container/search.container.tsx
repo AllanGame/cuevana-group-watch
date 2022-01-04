@@ -4,8 +4,6 @@ import {QueueManagerState} from "../../../../common/types";
 import {Dispatch, SetStateAction, useContext} from "react";
 import Video from "../../../../common/video";
 import Group from "../../../../groups/group";
-import {Socket} from "socket.io-client";
-import {DefaultEventsMap} from "@socket.io/component-emitter";
 import {GroupContext, IGroupContext} from "../../../../groups/group.context";
 import {ISocketContext, SocketContext} from "../../../../context/socket.context";
 
