@@ -6,18 +6,57 @@ import {useContext, useEffect, useState} from "react";
 import {UserContext} from "../../users/user.context";
 import {GroupContext, IGroupContext} from "../../groups/group.context";
 import Group from "../../groups/group";
+import io, {Socket} from "socket.io-client";
+import {DefaultEventsMap} from "@socket.io/component-emitter";
+import {ISocketContext, SocketContext} from "../../context/socket.context";
 
 
 const GroupPage: NextPage = (props: any) => {
     const [group, setGroup] = useState<Group>(props.group);
+    const [socket, setSocket] = useState<Socket<DefaultEventsMap, DefaultEventsMap>>(null as any);
     const {user} = useContext(UserContext) as any;
 
     useEffect(() => {
-        if(props.group.error || !user || !user[0]) {
+        if(!user[0]) {
             return;
         }
 
-        fetch('/api/socketio');
+        fetch('/api/socketio').then(() => {
+            let socket = io();
+            socket.on('connect', () => {
+                socket.emit('joinRoom', {
+                    group: props.group,
+                    user: user[0]
+                })
+            });
+
+            socket.on('groupUpdate', (newGroup: Group) => {
+                // Update group
+                setGroup(newGroup);
+
+                // Update view state
+                let newViewState = newGroup.viewState;
+                let video = document.getElementById('player') as HTMLVideoElement;
+                video.currentTime = newViewState.time;
+                newViewState.playing ? video.play() : video.pause();
+            })
+
+            socket.on('userJoin', (newUser) => {
+                // Show a popup
+                console.log(newUser.nickname + " has joined to the group")
+
+                // Add user to the group
+                group.members.push(newUser);
+                setGroup(group);
+            })
+
+            socket.on('disconnect', () => {
+                // Show a pop up and emit the disconnection
+                console.log('disconnect')
+            })
+
+            setSocket(socket);
+        })
     }, [])
 
     if(props.group.error) {
@@ -28,7 +67,8 @@ const GroupPage: NextPage = (props: any) => {
             </div>
         )
     }
-    if(!user) {
+
+    if(!user[0]) {
         return (
             <div className={styles.notFound}>
                 <h1>You haven&apos;t registered yet.</h1>
@@ -37,14 +77,24 @@ const GroupPage: NextPage = (props: any) => {
         )
     }
 
+    if(!socket) {
+        return (
+            <div className={styles.notFound}>
+                <h1>Loading, wait a second.</h1>
+            </div>
+        )
+    }
+
     return (
         <GroupContext.Provider value={{group, setGroup} as IGroupContext}>
-            <div className={styles.container}>
-                <Player group={props.group} viewer={user[0]}/>
-                <div className={styles.debug}>
-                    <p>DEBUG not finished</p>
+            <SocketContext.Provider value={{socket, setSocket} as ISocketContext}>
+                <div className={styles.container}>
+                    <Player group={props.group} viewer={user[0]}/>
+                    <div className={styles.debug}>
+                        <p>DEBUG not finished</p>
+                    </div>
                 </div>
-            </div>
+            </SocketContext.Provider>
         </GroupContext.Provider>
     )
 }

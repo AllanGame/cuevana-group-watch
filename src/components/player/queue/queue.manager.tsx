@@ -21,7 +21,6 @@ const ENTER_KEY_CODE = 13;
 interface Props {
     group: Group;
     viewer: User;
-    socket: Socket<DefaultEventsMap, DefaultEventsMap>;
 }
 
 const QueueManager: NextPage<Props> = (props): JSX.Element => {
@@ -46,7 +45,6 @@ const QueueManager: NextPage<Props> = (props): JSX.Element => {
                     searchItems={queueManagerState.searchItems}
                     searched={queueManagerState.searched}
                     queueManagerStateModifier={setQueueManagerState}
-                    socket={props.socket}
                 />
                 :
                 <QueueContainer

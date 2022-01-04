@@ -10,34 +10,34 @@ import {DefaultEventsMap} from "@socket.io/component-emitter";
 import {LocalViewConfig} from "../../common/types";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import Video from "../../common/video";
+import {ISocketContext, SocketContext} from "../../context/socket.context";
 
 interface Props {
     group: Group
     viewer: User;
 }
 
-let socket: Socket<DefaultEventsMap, DefaultEventsMap>;
 
 // TODO: video.currentTime = ... is very slow, find another way to make it faster
 // TODO: Move all functions to another file called player.interactions.tsx
 // TODO: Show tooltip with time when hovering the progress bar
 const Player: NextPage<Props> = (props): JSX.Element => {
     const {group, setGroup} = useContext<IGroupContext>(GroupContext);
+    const {socket} = useContext<ISocketContext>(SocketContext);
 
     const [isQueueManagerVisible, setIsQueueManagerVisible] = useState(true);
     const [localViewConfig, setLocalViewConfig] = useState<LocalViewConfig>({fullscreen: false, volume: 100})
-    const [socketState, setSocketState] = useState<Socket<DefaultEventsMap, DefaultEventsMap>>(socket);
     const [currentVideo, setCurrentVideo] = useState<Video | undefined>(undefined);
 
 
     // Update currentVideo when queue changes (If the playing video changes)
     useEffect(() => {
         let nowPlayingVideo: Video | undefined = group.viewState.queue.find((video: Video) => video.isPlaying);
-        if(!nowPlayingVideo) {
+        if (!nowPlayingVideo) {
             return;
         }
 
-        if(JSON.stringify(currentVideo) == JSON.stringify(nowPlayingVideo)) {
+        if (JSON.stringify(currentVideo) == JSON.stringify(nowPlayingVideo)) {
             return;
         }
 
@@ -49,7 +49,7 @@ const Player: NextPage<Props> = (props): JSX.Element => {
     // Update video source when current video changes
     useEffect(() => {
         let nowPlayingVideo: Video | undefined = group.viewState.queue.find((video: Video) => video.isPlaying);
-        if(!nowPlayingVideo) {
+        if (!nowPlayingVideo) {
             return;
         }
 
@@ -59,44 +59,6 @@ const Player: NextPage<Props> = (props): JSX.Element => {
                 updateVideoSource(data.src);
             })
     }, [currentVideo, setCurrentVideo])
-
-    // Socket connection
-    useEffect(() => {
-        socket = io()
-        socket.on('connect', () => {
-            socket.emit('joinRoom', {
-                group: props.group,
-                user: props.viewer
-            })
-        });
-
-        socket.on('groupUpdate', (newGroup: Group) => {
-            // Update group
-            setGroup(newGroup);
-
-            // Update view state
-            let newViewState = newGroup.viewState;
-            let video = document.getElementById('player') as HTMLVideoElement;
-            video.currentTime = newViewState.time;
-            newViewState.playing ? video.play() : video.pause();
-        })
-
-        socket.on('userJoin', (newUser) => {
-            // Show a popup
-            console.log(newUser.nickname + " has joined to the group")
-
-            // Add user to the group
-            group.members.push(newUser);
-            setGroup(group);
-        })
-
-        socket.on('disconnect', () => {
-            // Show a pop up and emit the disconnection
-            console.log('disconnect')
-        })
-
-        setSocketState(socket);
-    }, [])
 
     const handleKeyDown = useCallback((event) => {
         // Ignore when typing on queue manager search
@@ -130,7 +92,7 @@ const Player: NextPage<Props> = (props): JSX.Element => {
         <div className={styles.playerContainer} id="playerContainer">
             {/* QueueManager */}
             <div className={isQueueManagerVisible ? styles.queueManagerWrapper : styles.queueManagerWrapperInvisible}>
-                <QueueManager group={group} viewer={props.viewer} socket={socketState}/>
+                <QueueManager group={group} viewer={props.viewer}/>
             </div>
 
             {/*Video*/}

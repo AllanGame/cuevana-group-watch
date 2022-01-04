@@ -7,13 +7,13 @@ import Group from "../../../../groups/group";
 import {Socket} from "socket.io-client";
 import {DefaultEventsMap} from "@socket.io/component-emitter";
 import {GroupContext, IGroupContext} from "../../../../groups/group.context";
+import {ISocketContext, SocketContext} from "../../../../context/socket.context";
 
 interface Props {
     searched: boolean;
     searchItems: Video[];
     queueManagerStateModifier: Dispatch<SetStateAction<QueueManagerState>>;
     className: string;
-    socket: Socket<DefaultEventsMap, DefaultEventsMap>;
 }
 
 /**
@@ -21,8 +21,8 @@ interface Props {
  * when a user is searching for a video
  */
 const SearchContainer: NextPage<Props> = (props): JSX.Element => {
-
     const {setGroup} = useContext<IGroupContext>(GroupContext);
+    const {socket} = useContext<ISocketContext>(SocketContext);
 
     return (
         <div className={props.className}>
@@ -49,7 +49,7 @@ const SearchContainer: NextPage<Props> = (props): JSX.Element => {
                                         }
                                     } as Group;
 
-                                    props.socket.emit('groupUpdate', newGroup);
+                                    socket.emit('groupUpdate', newGroup);
                                     return newGroup;
                                 })
 
