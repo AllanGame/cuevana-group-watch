@@ -21,7 +21,7 @@ import {
     faChevronRight
 } from '@fortawesome/free-solid-svg-icons'
 import { useState } from 'react'
-import { UserContext } from '../users/user.context'
+import { UserContext } from '../context/user.context'
 library.add(
     faArrowRight,
     faGripVertical,

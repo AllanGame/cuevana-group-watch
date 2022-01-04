@@ -3,7 +3,7 @@ import Button from "../ui/button";
 import styles from '../../styles/components/group.access.module.css';
 import { useRouter } from "next/router";
 import {useContext, useState} from "react";
-import {UserContext} from "../../users/user.context";
+import {UserContext} from "../../context/user.context";
 import {toGroup, toJSON} from "../../utils/object.parser";
 import User from "../../users/user";
 

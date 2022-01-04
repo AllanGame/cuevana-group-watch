@@ -4,7 +4,7 @@ import styles from '../../styles/components/Player.module.css'
 import User from "../../users/user";
 import QueueManager from "./queue/queue.manager";
 import {SyntheticEvent, useCallback, useContext, useEffect, useState} from "react";
-import {GroupContext, IGroupContext} from "../../groups/group.context";
+import {GroupContext, IGroupContext} from "../../context/group.context";
 import {LocalViewConfig} from "../../common/types";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import Video from "../../common/video";

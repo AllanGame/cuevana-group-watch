@@ -9,7 +9,7 @@ import SearchContainer from "./container/search.container";
 import QueueContainer from "./container/queue.container";
 import {QueueManagerState} from "../../../common/types";
 import Video from "../../../common/video";
-import {GroupContext, IGroupContext} from "../../../groups/group.context";
+import {GroupContext, IGroupContext} from "../../../context/group.context";
 
 const URL_REGEX = new RegExp(
     /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/

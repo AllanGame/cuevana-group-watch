@@ -1,5 +1,5 @@
 import {createContext, Dispatch, SetStateAction} from "react";
-import Group from "./group";
+import Group from "../groups/group";
 
 export type IGroupContext = {
     group: Group,

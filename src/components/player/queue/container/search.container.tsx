@@ -4,7 +4,7 @@ import {QueueManagerState} from "../../../../common/types";
 import {Dispatch, SetStateAction, useContext} from "react";
 import Video from "../../../../common/video";
 import Group from "../../../../groups/group";
-import {GroupContext, IGroupContext} from "../../../../groups/group.context";
+import {GroupContext, IGroupContext} from "../../../../context/group.context";
 import {ISocketContext, SocketContext} from "../../../../context/socket.context";
 
 interface Props {
