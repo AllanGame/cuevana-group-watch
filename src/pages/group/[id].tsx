@@ -2,10 +2,14 @@ import { NextPage, NextPageContext } from "next";
 import Button from "../../components/ui/button";
 import Player from "../../components/player/player";
 import styles from '../../styles/Group.module.css'
-import {useContext, useEffect} from "react";
+import {useContext, useEffect, useState} from "react";
 import {UserContext} from "../../users/user.context";
+import {GroupContext, IGroupContext} from "../../groups/group.context";
+import Group from "../../groups/group";
+
 
 const GroupPage: NextPage = (props: any) => {
+    const [group, setGroup] = useState<Group>(props.group);
     const {user} = useContext(UserContext) as any;
 
     useEffect(() => {
@@ -34,12 +38,14 @@ const GroupPage: NextPage = (props: any) => {
     }
 
     return (
-        <div className={styles.container}>
-            <Player group={props.group} viewer={user[0]}/>
-            <div className={styles.debug}>
-                <p>DEBUG not finished</p>
+        <GroupContext.Provider value={{group, setGroup} as IGroupContext}>
+            <div className={styles.container}>
+                <Player group={props.group} viewer={user[0]}/>
+                <div className={styles.debug}>
+                    <p>DEBUG not finished</p>
+                </div>
             </div>
-        </div>
+        </GroupContext.Provider>
     )
 }
 

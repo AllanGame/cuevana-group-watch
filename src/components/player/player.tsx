@@ -3,11 +3,11 @@ import Group from "../../groups/group";
 import styles from '../../styles/components/Player.module.css'
 import User from "../../users/user";
 import QueueManager from "./queue/queue.manager";
-import {SyntheticEvent, useCallback, useEffect, useState} from "react";
+import {SyntheticEvent, useCallback, useContext, useEffect, useState} from "react";
 import io, {Socket} from "socket.io-client";
-import {GroupContext} from "../../groups/group.context";
+import {GroupContext, IGroupContext} from "../../groups/group.context";
 import {DefaultEventsMap} from "@socket.io/component-emitter";
-import {LocalViewConfig, ViewState} from "../../common/types";
+import {LocalViewConfig} from "../../common/types";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import Video from "../../common/video";
 
@@ -22,7 +22,7 @@ let socket: Socket<DefaultEventsMap, DefaultEventsMap>;
 // TODO: Move all functions to another file called player.interactions.tsx
 // TODO: Show tooltip with time when hovering the progress bar
 const Player: NextPage<Props> = (props): JSX.Element => {
-    const [group, setGroup] = useState<Group>(props.group);
+    const {group, setGroup} = useContext<IGroupContext>(GroupContext);
 
     const [isQueueManagerVisible, setIsQueueManagerVisible] = useState(true);
     const [localViewConfig, setLocalViewConfig] = useState<LocalViewConfig>({fullscreen: false, volume: 100})
@@ -130,9 +130,7 @@ const Player: NextPage<Props> = (props): JSX.Element => {
         <div className={styles.playerContainer} id="playerContainer">
             {/* QueueManager */}
             <div className={isQueueManagerVisible ? styles.queueManagerWrapper : styles.queueManagerWrapperInvisible}>
-                <GroupContext.Provider value={{group, setGroup} as any}>
-                    <QueueManager group={group} viewer={props.viewer} socket={socketState}/>
-                </GroupContext.Provider>
+                <QueueManager group={group} viewer={props.viewer} socket={socketState}/>
             </div>
 
             {/*Video*/}
