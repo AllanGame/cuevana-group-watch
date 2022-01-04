@@ -20,7 +20,7 @@ export default async function handler(
                 socket.join(group.id)
                 socket.broadcast.to(group.id).emit('userJoin', user);
 
-                // Send room current group state to new user (if any)
+                // Send room current group state to new user (if exists)
                 if(roomsCache.has(group.id)) {
                     socket.emit('groupUpdate', roomsCache.get(group.id));
                 }

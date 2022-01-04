@@ -3,11 +3,11 @@ import Group from "../../groups/group";
 import styles from '../../styles/components/Player.module.css'
 import User from "../../users/user";
 import QueueManager from "./queue/queue.manager";
-import {SyntheticEvent, useCallback, useContext, useEffect, useState} from "react";
+import {SyntheticEvent, useCallback, useEffect, useState} from "react";
 import io, {Socket} from "socket.io-client";
 import {GroupContext} from "../../groups/group.context";
 import {DefaultEventsMap} from "@socket.io/component-emitter";
-import {LocalViewState} from "../../common/types";
+import {LocalViewConfig, ViewState} from "../../common/types";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import Video from "../../common/video";
 
@@ -25,9 +25,10 @@ const Player: NextPage<Props> = (props): JSX.Element => {
     const [group, setGroup] = useState<Group>(props.group);
 
     const [isQueueManagerVisible, setIsQueueManagerVisible] = useState(true);
-    const [localViewState, setLocalViewState] = useState<LocalViewState>({fullscreen: false, volume: 100})
+    const [localViewConfig, setLocalViewConfig] = useState<LocalViewConfig>({fullscreen: false, volume: 100})
     const [socketState, setSocketState] = useState<Socket<DefaultEventsMap, DefaultEventsMap>>(socket);
     const [currentVideo, setCurrentVideo] = useState<Video | undefined>(undefined);
+
 
     // Update currentVideo when queue changes (If the playing video changes)
     useEffect(() => {
@@ -85,9 +86,7 @@ const Player: NextPage<Props> = (props): JSX.Element => {
             console.log(newUser.nickname + " has joined to the group")
 
             // Add user to the group
-            console.log('tt', group);
             group.members.push(newUser);
-            console.log('ttt', group);
             setGroup(group);
         })
 
@@ -166,7 +165,7 @@ const Player: NextPage<Props> = (props): JSX.Element => {
                             <p id="timeIndicator">00:00 / 00:00</p>
                             <div className={styles.rightOptions}>
                                 <FontAwesomeIcon className={styles.option} icon="cog" onClick={togglePlay}/>
-                                <FontAwesomeIcon className={styles.option} icon={localViewState.fullscreen ? 'expand' : 'compress'} onClick={toggleFullscreen}/>
+                                <FontAwesomeIcon className={styles.option} icon={localViewConfig.fullscreen ? 'expand' : 'compress'} onClick={toggleFullscreen}/>
                             </div>
                         </div>
                     </div>
@@ -283,7 +282,6 @@ const Player: NextPage<Props> = (props): JSX.Element => {
 
             return (hour > 0 ? hour + ':' : '') + minute + ':' + second;
         }
-
     }
 
     function toggleFullscreen() {
@@ -292,11 +290,11 @@ const Player: NextPage<Props> = (props): JSX.Element => {
 
         isFullScreen ? document.exitFullscreen() : player.requestFullscreen();
 
-        setLocalViewState(prevState => {
+        setLocalViewConfig(prevState => {
             return {
                 ...prevState,
                 fullscreen: isFullScreen
-            } as LocalViewState;
+            } as LocalViewConfig;
         });
     }
 

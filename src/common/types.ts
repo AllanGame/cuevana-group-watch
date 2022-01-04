@@ -10,7 +10,7 @@ export type ViewState = {
     queue: Video[];
 }
 
-export type LocalViewState = {
+export type LocalViewConfig = {
     fullscreen: boolean;
     volume: number;
 }

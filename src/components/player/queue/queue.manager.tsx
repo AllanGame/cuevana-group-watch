@@ -2,23 +2,21 @@ import styles from '../../../styles/components/QueueManager.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Group from "../../../groups/group";
 import User from "../../../users/user";
-import QueueItem from "./item/queue.item";
 import {Socket} from "socket.io-client";
 import {DefaultEventsMap} from "@socket.io/component-emitter";
 import {NextPage} from "next";
 import axios from "axios";
-import {useContext, useEffect, useState} from "react";
-import SearchItem from "./item/search.item";
+import {useContext, useState} from "react";
 import SearchContainer from "./container/search.container";
 import QueueContainer from "./container/queue.container";
 import {QueueManagerState} from "../../../common/types";
-import {QueueContext} from "../../../groups/queue.context";
 import Video from "../../../common/video";
 import {GroupContext} from "../../../groups/group.context";
 
 const URL_REGEX = new RegExp(
     /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
 );
+const ENTER_KEY_CODE = 13;
 
 interface Props {
     group: Group;
@@ -62,7 +60,7 @@ const QueueManager: NextPage<Props> = (props): JSX.Element => {
 
 
     function handleEnterKey(e: any) {
-        if(e.charCode == 13 && e.target.value.length > 0) {
+        if(e.charCode == ENTER_KEY_CODE && e.target.value.length > 0) {
             handleSearch()
         }
     }
