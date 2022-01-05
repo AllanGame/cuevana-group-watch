@@ -20,7 +20,7 @@ interface Props {
  */
 const SearchContainer: NextPage<Props> = (props): JSX.Element => {
     const {setGroup} = useContext<IGroupContext>(GroupContext);
-    const {socket} = useContext<ISocketContext>(SocketContext);
+    const {socket} = useContext<ISocketContext>(SocketContext)
 
     return (
         <div className={props.className}>
@@ -29,8 +29,8 @@ const SearchContainer: NextPage<Props> = (props): JSX.Element => {
                     (
                         <SearchItem
                             key={`searchItem-${index}`}
-                            posterSrc={item.itemData.posterSrc}
-                            title={item.itemData.title}
+                            posterSrc={item.data.posterSrc}
+                            title={item.data.title}
                             onAdd={() => {
                                 // Clear search input
                                 const searchInput = document
@@ -46,7 +46,6 @@ const SearchContainer: NextPage<Props> = (props): JSX.Element => {
                                             queue: prevState.viewState.queue.concat([item])
                                         }
                                     } as Group;
-
                                     socket.emit('groupUpdate', newGroup);
                                     return newGroup;
                                 })

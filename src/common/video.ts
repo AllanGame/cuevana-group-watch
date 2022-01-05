@@ -1,5 +1,4 @@
-import User from "../users/user";
-import {VideoItemData} from "./types";
+import {VideoData} from "./types";
 
 /**
  * Video class used in {@link Group.queue}
@@ -12,12 +11,12 @@ import {VideoItemData} from "./types";
  */
 export default class Video {
     origin: string;
-    itemData: VideoItemData;
+    data: VideoData;
     isPlaying: boolean;
 
-    constructor(origin: string, itemData: VideoItemData, isPlaying: boolean) {
+    constructor(origin: string, itemData: VideoData, isPlaying: boolean) {
         this.origin = origin;
-        this.itemData = itemData;
+        this.data = itemData;
         this.isPlaying = isPlaying;
     }
 }

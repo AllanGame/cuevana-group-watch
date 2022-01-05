@@ -10,7 +10,6 @@ import io, {Socket} from "socket.io-client";
 import {DefaultEventsMap} from "@socket.io/component-emitter";
 import {ISocketContext, SocketContext} from "../../context/socket.context";
 
-
 const GroupPage: NextPage = (props: any) => {
     const [group, setGroup] = useState<Group>(props.group);
     const [socket, setSocket] = useState<Socket<DefaultEventsMap, DefaultEventsMap>>(null as any);
@@ -31,14 +30,19 @@ const GroupPage: NextPage = (props: any) => {
             });
 
             socket.on('groupUpdate', (newGroup: Group) => {
-                // Update group
-                setGroup(newGroup);
+                const video = document.getElementById('player') as HTMLVideoElement;
 
-                // Update view state
-                let newViewState = newGroup.viewState;
-                let video = document.getElementById('player') as HTMLVideoElement;
+                const newViewState = newGroup.viewState;
                 video.currentTime = newViewState.time;
-                newViewState.playing ? video.play() : video.pause();
+
+                const currentVideo = newViewState.queue.find(video => video.isPlaying);
+
+                if(!video.src || (currentVideo && currentVideo.data.src && currentVideo.data.src !== video.src)) {
+                    // @ts-ignore
+                    video.src = currentVideo.data.src as string;
+                }
+
+                setGroup(newGroup);
             })
 
             socket.on('userJoin', (newUser) => {

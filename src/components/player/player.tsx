@@ -15,7 +15,6 @@ interface Props {
     viewer: User;
 }
 
-
 // TODO: video.currentTime = ... is very slow, find another way to make it faster
 // TODO: Move all functions to another file called player.interactions.tsx
 // TODO: Show tooltip with time when hovering the progress bar
@@ -46,7 +45,7 @@ const Player: NextPage<Props> = (props): JSX.Element => {
 
     // Update video source when current video changes
     useEffect(() => {
-        let nowPlayingVideo: Video | undefined = group.viewState.queue.find((video: Video) => video.isPlaying);
+        let nowPlayingVideo: Video = group.viewState.queue.find((video: Video) => video.isPlaying) as Video;
         if (!nowPlayingVideo) {
             return;
         }
@@ -54,7 +53,20 @@ const Player: NextPage<Props> = (props): JSX.Element => {
         fetch(`${process.env.NEXT_PUBLIC_SERVER_PATH || 'http://localhost:3000'}/api/cuevana?url=${nowPlayingVideo.origin}`)
             .then(res => res.json())
             .then(data => {
-                updateVideoSource(data.src);
+                const video = document.getElementById('player') as HTMLVideoElement;
+                video.src = data.src;
+                nowPlayingVideo.data.src = data.src;
+
+                setGroup(prevState => {
+                    let newGroup = {
+                        ...prevState,
+                        viewState: {
+                            ...prevState.viewState,
+                            queue: prevState.viewState.queue.map((video) => video.isPlaying ? nowPlayingVideo : video)
+                        }
+                    } as Group;
+                    return newGroup;
+                })
             })
     }, [currentVideo, setCurrentVideo])
 
@@ -134,60 +146,18 @@ const Player: NextPage<Props> = (props): JSX.Element => {
 
     // Interactions
 
-    function updateVideoSource(source: string) {
-        const video = document.getElementById('player') as HTMLVideoElement;
-        video.src = source;
-        setGroup((prevState: Group) => {
-            let newGroup = {
-                ...prevState,
-                viewState: {
-                    ...prevState.viewState,
-                    time: video.currentTime,
-                    playing: !video.paused,
-                }
-            } as Group;
-
-            socket.emit('groupUpdate', newGroup);
-            return newGroup;
-        })
-    }
-
     function rewind() {
         const video = document.getElementById('player') as HTMLVideoElement;
         video.currentTime = video.currentTime - 5;
 
-        setGroup((prevState: Group) => {
-            let newGroup = {
-                ...prevState,
-                viewState: {
-                    ...prevState.viewState,
-                    time: video.currentTime,
-                    playing: !video.paused,
-                }
-            } as Group;
-
-            socket.emit('groupUpdate', newGroup);
-            return newGroup;
-        })
+        defaultEmit()
     }
 
     function jump() {
         const video = document.getElementById('player') as HTMLVideoElement;
         video.currentTime = video.currentTime + 5;
 
-        setGroup((prevState: Group) => {
-            let newGroup = {
-                ...prevState,
-                viewState: {
-                    ...prevState.viewState,
-                    time: video.currentTime,
-                    playing: !video.paused,
-                }
-            } as Group;
-
-            socket.emit('groupUpdate', newGroup);
-            return newGroup;
-        })
+        defaultEmit()
     }
 
     function handleProgressBarClick(event: any) {
@@ -195,23 +165,13 @@ const Player: NextPage<Props> = (props): JSX.Element => {
         const progress = document.getElementById('videoProgress') as any;
         video.currentTime = (event.nativeEvent.offsetX / progress.offsetWidth) * video.duration;
 
-        setGroup((prevState: Group) => {
-            let newGroup = {
-                ...prevState,
-                viewState: {
-                    ...prevState.viewState,
-                    time: video.currentTime,
-                    playing: !video.paused,
-                }
-            } as Group;
-
-            socket.emit('groupUpdate', newGroup);
-            return newGroup;
-        })
+        defaultEmit()
     }
 
     function handleTimeUpdate(event: SyntheticEvent<HTMLVideoElement, Event>) {
         const video = event.target as HTMLVideoElement;
+
+        socket.emit('timeUpdate', video.currentTime);
 
         // Modify progress bar
         const progressBar = document.getElementById('videoProgressFilled') as any;
@@ -260,6 +220,12 @@ const Player: NextPage<Props> = (props): JSX.Element => {
         let video = document.getElementById('player') as HTMLVideoElement;
         group.viewState.playing ? video.pause() : video.play();
 
+        defaultEmit()
+    }
+
+
+    function defaultEmit() {
+        const video = document.getElementById('video') as HTMLVideoElement;
         setGroup((prevState: Group) => {
             let newGroup = {
                 ...prevState,
@@ -269,7 +235,6 @@ const Player: NextPage<Props> = (props): JSX.Element => {
                     playing: !video.paused,
                 }
             } as Group;
-
             socket.emit('groupUpdate', newGroup);
             return newGroup;
         })

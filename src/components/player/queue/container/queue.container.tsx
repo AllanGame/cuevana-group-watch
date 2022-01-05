@@ -18,10 +18,10 @@ const QueueContainer: NextPage<Props> = (props): JSX.Element => {
                     (
                         <QueueItem
                             key={`searchItem-${index}`}
-                            addedBy={item.itemData.addedBy}
-                            duration={item.itemData.duration}
-                            posterSrc={item.itemData.posterSrc}
-                            title={item.itemData.title}
+                            addedBy={item.data.addedBy}
+                            duration={item.data.duration}
+                            posterSrc={item.data.posterSrc}
+                            title={item.data.title}
                         />
                     ))
             }

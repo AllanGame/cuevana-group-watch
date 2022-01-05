@@ -15,12 +15,16 @@ export type LocalViewConfig = {
     volume: number;
 }
 
-export type VideoItemData = {
+export type VideoData = {
     addedBy: User;
     duration: string;
     posterSrc: string;
     title: string;
     origin: string;
+    /**
+     * Saves the URL of the real video of the movie / series
+     */
+    src?: string;
 }
 
 
