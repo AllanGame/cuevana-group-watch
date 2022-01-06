@@ -29,14 +29,20 @@ const GroupPage: NextPage = (props: any) => {
                 })
             });
 
+            // TODO: add loading screen while syncing and remove it after setGroup()
             socket.on('groupUpdate', (newGroup: Group) => {
+                console.log('groupUpdate.newGroup', newGroup);
                 const video = document.getElementById('player') as HTMLVideoElement;
 
                 const newViewState = newGroup.viewState;
+
                 video.currentTime = newViewState.time;
 
-                const currentVideo = newViewState.queue.find(video => video.isPlaying);
+                // toggle play
+                newViewState.playing ? video.play() : video.pause()
 
+                // Set current video URL
+                const currentVideo = newViewState.queue.find(video => video.isPlaying);
                 if(!video.src || (currentVideo && currentVideo.data.src && currentVideo.data.src !== video.src)) {
                     // @ts-ignore
                     video.src = currentVideo.data.src as string;
@@ -49,9 +55,13 @@ const GroupPage: NextPage = (props: any) => {
                 // Show a popup
                 console.log(newUser.nickname + " has joined to the group")
 
-                // Add user to the group
-                group.members.push(newUser);
-                setGroup(group);
+                // Add user to the member list without modifying anything else
+                setGroup((prevState) => {
+                    return {
+                        ...prevState,
+                        members: prevState.members.concat([newUser])
+                    }
+                });
             })
 
             socket.on('disconnect', () => {

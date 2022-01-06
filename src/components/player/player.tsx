@@ -65,6 +65,7 @@ const Player: NextPage<Props> = (props): JSX.Element => {
                             queue: prevState.viewState.queue.map((video) => video.isPlaying ? nowPlayingVideo : video)
                         }
                     } as Group;
+                    socket.emit('groupUpdate', newGroup);
                     return newGroup;
                 })
             })
@@ -109,6 +110,7 @@ const Player: NextPage<Props> = (props): JSX.Element => {
             <div className={styles.videoWrapper} >
                 <video
                     id="player"
+                    src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
                     className={styles.video}
                     onTimeUpdate={handleTimeUpdate}
                     onClick={togglePlay}
@@ -147,31 +149,31 @@ const Player: NextPage<Props> = (props): JSX.Element => {
     // Interactions
 
     function rewind() {
-        const video = document.getElementById('player') as HTMLVideoElement;
-        video.currentTime = video.currentTime - 5;
-
-        defaultEmit()
+        // const video = document.getElementById('player') as HTMLVideoElement;
+        // video.currentTime = video.currentTime - 5;
+        //
+        // defaultEmit()
     }
 
     function jump() {
-        const video = document.getElementById('player') as HTMLVideoElement;
-        video.currentTime = video.currentTime + 5;
-
-        defaultEmit()
+        // const video = document.getElementById('player') as HTMLVideoElement;
+        // video.currentTime = video.currentTime + 5;
+        //
+        // defaultEmit()
     }
 
     function handleProgressBarClick(event: any) {
-        const video = document.getElementById('player') as HTMLVideoElement;
-        const progress = document.getElementById('videoProgress') as any;
-        video.currentTime = (event.nativeEvent.offsetX / progress.offsetWidth) * video.duration;
-
-        defaultEmit()
+        // const video = document.getElementById('player') as HTMLVideoElement;
+        // const progress = document.getElementById('videoProgress') as any;
+        // video.currentTime = (event.nativeEvent.offsetX / progress.offsetWidth) * video.duration;
+        //
+        // defaultEmit()
     }
 
     function handleTimeUpdate(event: SyntheticEvent<HTMLVideoElement, Event>) {
         const video = event.target as HTMLVideoElement;
 
-        socket.emit('timeUpdate', video.currentTime);
+        socket.emit('timeUpdate', {time: video.currentTime, group: group.id});
 
         // Modify progress bar
         const progressBar = document.getElementById('videoProgressFilled') as any;
@@ -216,28 +218,27 @@ const Player: NextPage<Props> = (props): JSX.Element => {
         });
     }
 
-    function togglePlay() {
+    async function togglePlay() {
         let video = document.getElementById('player') as HTMLVideoElement;
-        group.viewState.playing ? video.pause() : video.play();
 
-        defaultEmit()
-    }
+        await (group.viewState.playing ? video.pause() : video.play())
 
-
-    function defaultEmit() {
-        const video = document.getElementById('video') as HTMLVideoElement;
-        setGroup((prevState: Group) => {
+        // Modify viewState and send changes to server
+        setGroup((prevState) => {
             let newGroup = {
                 ...prevState,
                 viewState: {
                     ...prevState.viewState,
                     time: video.currentTime,
-                    playing: !video.paused,
+                    playing: !group.viewState.playing
                 }
             } as Group;
             socket.emit('groupUpdate', newGroup);
             return newGroup;
         })
+    }
+
+    function defaultEmit() {
     }
 }
 

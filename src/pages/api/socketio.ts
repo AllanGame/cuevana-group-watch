@@ -16,7 +16,6 @@ export default async function handler(
 
         io.on('connection', socket => {
             socket.on('joinRoom', ({group, user}) => {
-                console.log(`${user.nickname} has joined to ${group.id} room`)
                 socket.join(group.id)
                 socket.broadcast.to(group.id).emit('userJoin', user);
 
@@ -29,6 +28,14 @@ export default async function handler(
             socket.on('groupUpdate', (group: Group) => {
                 socket.broadcast.to(group.id).emit("groupUpdate", group);
                 roomsCache.set(group.id, group);
+            })
+
+            socket.on('timeUpdate', (data) => {
+                const group = roomsCache.get(data.group);
+                if(group) {
+                    // Update to the latest time for new users
+                    group.viewState.time = data.time;
+                }
             })
         })
 
