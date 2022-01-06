@@ -36,7 +36,14 @@ const GroupPage: NextPage = (props: any) => {
 
                 const newViewState = newGroup.viewState;
 
-                video.currentTime = newViewState.time;
+                const timeDifference = video.currentTime - newViewState.time;
+                // If time difference is 2 seconds or higher, sync new time
+                // this helps to avoid time modification for milliseconds or
+                // minimum time difference, for example, if the current video
+                // currentTime is 5 and the new ViewState is 5.3 it shouldn't sync
+                if(timeDifference > 1 || timeDifference < -1) {
+                    video.currentTime = newViewState.time;
+                }
 
                 // toggle play
                 newViewState.playing ? video.play() : video.pause()
