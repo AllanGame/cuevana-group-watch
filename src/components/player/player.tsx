@@ -118,7 +118,7 @@ const Player: NextPage<Props> = (props): JSX.Element => {
 
                 {/* Custom Controls */}
                 <div className={styles.controller}>
-                    <div className={styles.progressWrapper} onClick={handleProgressBarClick}>
+                    <div className={styles.progressWrapper} onClick={handleSeek}>
                         <div className={styles.videoProgress} id="videoProgress">
                             <div className={styles.videoProgressFilled} id="videoProgressFilled"/>
                         </div>
@@ -162,12 +162,22 @@ const Player: NextPage<Props> = (props): JSX.Element => {
         // defaultEmit()
     }
 
-    function handleProgressBarClick(event: any) {
-        // const video = document.getElementById('player') as HTMLVideoElement;
-        // const progress = document.getElementById('videoProgress') as any;
-        // video.currentTime = (event.nativeEvent.offsetX / progress.offsetWidth) * video.duration;
-        //
-        // defaultEmit()
+    function handleSeek(event: any) {
+        const video = document.getElementById('player') as HTMLVideoElement;
+        const progress = document.getElementById('videoProgress') as any;
+        video.currentTime = (event.nativeEvent.offsetX / progress.offsetWidth) * video.duration;
+
+        setGroup((prevState) => {
+            let newGroup = {
+                ...prevState,
+                viewState: {
+                    ...prevState.viewState,
+                    time: video.currentTime
+                }
+            } as Group;
+            socket.emit('groupUpdate', newGroup);
+            return newGroup;
+        })
     }
 
     function handleTimeUpdate(event: SyntheticEvent<HTMLVideoElement, Event>) {
