@@ -128,7 +128,7 @@ const Player: NextPage<Props> = (props): JSX.Element => {
                             <div className={styles.leftOptions}>
                                 <FontAwesomeIcon className={styles.option} icon={group.viewState.playing ? 'pause' : 'play'} onClick={togglePlay}/>
                                 <FontAwesomeIcon className={styles.option} icon="undo" onClick={rewind}/>
-                                <FontAwesomeIcon className={styles.option} icon="volume-up" onClick={togglePlay}/>
+                                <FontAwesomeIcon className={styles.option} icon="volume-up"/>
                                 {/*Toggle QueueManager Visible*/}
                                 <FontAwesomeIcon className={styles.option} icon={isQueueManagerVisible ? 'chevron-left' : 'chevron-right'} onClick={() => {
                                     setIsQueueManagerVisible(prevState => !prevState);
@@ -148,18 +148,41 @@ const Player: NextPage<Props> = (props): JSX.Element => {
 
     // Interactions
 
+    // TODO: rewind and jump are literally the same
     function rewind() {
-        // const video = document.getElementById('player') as HTMLVideoElement;
-        // video.currentTime = video.currentTime - 5;
-        //
-        // defaultEmit()
+        const video = document.getElementById('player') as HTMLVideoElement;
+        const newTime = video.currentTime - 5;
+        video.currentTime = newTime;
+
+        setGroup((prevState) => {
+            let newGroup = {
+                ...prevState,
+                viewState: {
+                    ...prevState.viewState,
+                    time: newTime
+                }
+            } as Group;
+            socket.emit('groupUpdate', newGroup);
+            return newGroup;
+        })
     }
 
     function jump() {
-        // const video = document.getElementById('player') as HTMLVideoElement;
-        // video.currentTime = video.currentTime + 5;
-        //
-        // defaultEmit()
+        const video = document.getElementById('player') as HTMLVideoElement;
+        const newTime = video.currentTime + 5;
+        video.currentTime = newTime;
+
+        setGroup((prevState) => {
+            let newGroup = {
+                ...prevState,
+                viewState: {
+                    ...prevState.viewState,
+                    time: newTime
+                }
+            } as Group;
+            socket.emit('groupUpdate', newGroup);
+            return newGroup;
+        })
     }
 
     function handleSeek(event: any) {
@@ -183,6 +206,7 @@ const Player: NextPage<Props> = (props): JSX.Element => {
     function handleTimeUpdate(event: SyntheticEvent<HTMLVideoElement, Event>) {
         const video = event.target as HTMLVideoElement;
 
+        // Sends the latest time for syncing new users
         socket.emit('timeUpdate', {time: video.currentTime, group: group.id});
 
         // Modify progress bar
