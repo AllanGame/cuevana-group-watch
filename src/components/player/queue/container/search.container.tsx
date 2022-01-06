@@ -19,9 +19,10 @@ interface Props {
  * when a user is searching for a video
  */
 const SearchContainer: NextPage<Props> = (props): JSX.Element => {
-    const {setGroup} = useContext<IGroupContext>(GroupContext);
+    const {group, setGroup} = useContext<IGroupContext>(GroupContext);
     const {socket} = useContext<ISocketContext>(SocketContext)
 
+    // TODO: remove duplicated code
     return (
         <div className={props.className}>
             {props.searched ?
@@ -36,6 +37,45 @@ const SearchContainer: NextPage<Props> = (props): JSX.Element => {
                                 const searchInput = document
                                     .getElementById('searchInput') as HTMLInputElement;
                                 searchInput.value = '';
+
+                                // Check if the queue is empty to mark it as
+                                // isPlaying and add src property
+                                if(group.viewState.queue.length < 1) {
+                                    item.isPlaying = true;
+
+                                    try {
+                                        fetch(
+                                            `${process.env.NEXT_PUBLIC_SERVER_PATH || 'http://localhost:3000'}/api/cuevana?url=${item.origin}`
+                                        ).then(res => res.json())
+                                            .then(data => {
+                                                const video = document.getElementById('player') as HTMLVideoElement;
+                                                item.data.src = data.src;
+                                                video.src = data.src;
+                                                setGroup((prevState) => {
+                                                    let newGroup = {
+                                                        ...prevState,
+                                                        viewState: {
+                                                            ...prevState.viewState,
+                                                            queue: prevState.viewState.queue.concat([item])
+                                                        }
+                                                    } as Group;
+                                                    socket.emit('groupUpdate', newGroup);
+                                                    return newGroup;
+                                                })
+
+                                                props.queueManagerStateModifier(prevState => {
+                                                    return {
+                                                        ...prevState,
+                                                        searching: false,
+                                                        searched: false,
+                                                    }
+                                                })
+                                            })
+                                        return;
+                                    } catch (e) {
+                                        console.log(e)
+                                    }
+                                }
 
                                 // Add video to the group's queue
                                 setGroup((prevState) => {

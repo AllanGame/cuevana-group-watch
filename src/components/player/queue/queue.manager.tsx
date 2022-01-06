@@ -7,7 +7,7 @@ import axios from "axios";
 import {useContext, useState} from "react";
 import SearchContainer from "./container/search.container";
 import QueueContainer from "./container/queue.container";
-import {QueueManagerState} from "../../../common/types";
+import {QueueManagerState, VideoData} from "../../../common/types";
 import Video from "../../../common/video";
 import {GroupContext, IGroupContext} from "../../../context/group.context";
 
@@ -96,18 +96,22 @@ const QueueManager: NextPage<Props> = (props): JSX.Element => {
                 url: `${process.env.NEXT_PUBLIC_SERVER_PATH || 'http://localhost:3000'}/api/moviedata?url=${searchInput.value}`
             })
 
-            let {title, poster} = originRequestResponse.data;
+            const {title, poster} = originRequestResponse.data;
+            const itemData = {
+                posterSrc: poster,
+                title,
+                duration: "1h 2m",
+                addedBy: props.viewer,
+                origin: searchInput.value,
+                src: undefined
+            } as VideoData;
+
+            const item = new Video(searchInput.value, itemData, false);
+
             setQueueManagerState((prevState) => {
                 return {
                     ...prevState,
-                    searchItems: [new Video(searchInput.value, {
-                        posterSrc: poster,
-                        title,
-                        duration: "1h 2m",
-                        addedBy: props.viewer,
-                        origin: searchInput.value,
-                        src: undefined
-                    }, group.viewState.queue.length < 1)],
+                    searchItems: [item],
                     searching: true,
                     searched: true
                 }

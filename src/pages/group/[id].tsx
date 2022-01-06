@@ -36,6 +36,13 @@ const GroupPage: NextPage = (props: any) => {
 
                 const newViewState = newGroup.viewState;
 
+                // Set current video URL
+                const currentVideo = newViewState.queue.find(video => video.isPlaying);
+                if(!video.src || (currentVideo && currentVideo.data.src && currentVideo.data.src !== video.src)) {
+                    // @ts-ignore
+                    video.src = currentVideo.data.src;
+                }
+
                 const timeDifference = video.currentTime - newViewState.time;
                 // If time difference is 2 seconds or higher, sync new time
                 // this helps to avoid time modification for milliseconds or
@@ -47,13 +54,6 @@ const GroupPage: NextPage = (props: any) => {
 
                 // toggle play
                 newViewState.playing ? video.play() : video.pause()
-
-                // Set current video URL
-                const currentVideo = newViewState.queue.find(video => video.isPlaying);
-                if(!video.src || (currentVideo && currentVideo.data.src && currentVideo.data.src !== video.src)) {
-                    // @ts-ignore
-                    video.src = currentVideo.data.src as string;
-                }
 
                 setGroup(newGroup);
             })

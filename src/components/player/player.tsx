@@ -26,51 +26,6 @@ const Player: NextPage<Props> = (props): JSX.Element => {
     const [localViewConfig, setLocalViewConfig] = useState<LocalViewConfig>({fullscreen: false, volume: 100})
     const [currentVideo, setCurrentVideo] = useState<Video | undefined>(undefined);
 
-
-    // Update currentVideo when queue changes (If the playing video changes)
-    useEffect(() => {
-        let nowPlayingVideo: Video | undefined = group.viewState.queue.find((video: Video) => video.isPlaying);
-        if (!nowPlayingVideo) {
-            return;
-        }
-
-        if (JSON.stringify(currentVideo) == JSON.stringify(nowPlayingVideo)) {
-            return;
-        }
-
-        setCurrentVideo(nowPlayingVideo);
-
-    }, [group, setGroup])
-
-
-    // Update video source when current video changes
-    useEffect(() => {
-        let nowPlayingVideo: Video = group.viewState.queue.find((video: Video) => video.isPlaying) as Video;
-        if (!nowPlayingVideo) {
-            return;
-        }
-
-        fetch(`${process.env.NEXT_PUBLIC_SERVER_PATH || 'http://localhost:3000'}/api/cuevana?url=${nowPlayingVideo.origin}`)
-            .then(res => res.json())
-            .then(data => {
-                const video = document.getElementById('player') as HTMLVideoElement;
-                video.src = data.src;
-                nowPlayingVideo.data.src = data.src;
-
-                setGroup(prevState => {
-                    let newGroup = {
-                        ...prevState,
-                        viewState: {
-                            ...prevState.viewState,
-                            queue: prevState.viewState.queue.map((video) => video.isPlaying ? nowPlayingVideo : video)
-                        }
-                    } as Group;
-                    socket.emit('groupUpdate', newGroup);
-                    return newGroup;
-                })
-            })
-    }, [currentVideo, setCurrentVideo])
-
     const handleKeyDown = useCallback((event) => {
         // Ignore when typing on queue manager search
         if(document.getElementById('searchInput') === document.activeElement) {
