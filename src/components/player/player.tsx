@@ -7,7 +7,6 @@ import {SyntheticEvent, useCallback, useContext, useEffect, useState} from "reac
 import {GroupContext, IGroupContext} from "../../context/group.context";
 import {LocalViewConfig} from "../../common/types";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import Video from "../../common/video";
 import {ISocketContext, SocketContext} from "../../context/socket.context";
 
 interface Props {
@@ -24,7 +23,6 @@ const Player: NextPage<Props> = (props): JSX.Element => {
 
     const [isQueueManagerVisible, setIsQueueManagerVisible] = useState(true);
     const [localViewConfig, setLocalViewConfig] = useState<LocalViewConfig>({fullscreen: false, volume: 100})
-    const [currentVideo, setCurrentVideo] = useState<Video | undefined>(undefined);
 
     const handleKeyDown = useCallback((event) => {
         // Ignore when typing on queue manager search
